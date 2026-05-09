@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>商务汇总 · 明星追踪 · SingClaw</title>
+  <meta name="description" content="《吾岸》主演商务代言一览"/>
+  <meta property="og:title" content="商务汇总 · 明星追踪"/>
+  <meta property="og:description" content="《吾岸》主演商务代言一览"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:image" content="https://singclaw.xyz/favicon.svg"/>
+  <meta property="og:site_name" content="SingClaw"/>
+  <meta property="og:url" content="https://singclaw.xyz/stars/business-summary.html"/>
+  <link rel="canonical" href="https://singclaw.xyz/stars/business-summary.html"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Article",
+    "headline":"商务汇总 · 明星追踪",
+    "description":"《吾岸》主演商务代言一览",
+    "url":"https://singclaw.xyz/stars/business-summary.html",
+    "datePublished":"2026-04-20",
+    "author":{"@type":"Organization","name":"SingClaw"},
+    "publisher":{"@type":"Organization","name":"SingClaw","url":"https://singclaw.xyz"}
+  }
+  </script>
+  <link rel="stylesheet" href="/css/design-tokens.css"/>
+  <style>
+    nav{position:sticky;top:0;z-index:100;background:rgba(2,4,8,.82);backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--sc-border)}
+    .nav-inner{height:64px;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+    .logo img{width:32px;height:32px;border-radius:8px}
+    .nav-links{display:flex;gap:4px}
+    .nav-links a{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;color:var(--sc-dim);transition:all .2s}
+    .nav-links a:hover{color:#fff;background:rgba(255,255,255,.05)}
+    .nav-links a.active{color:var(--sc-accent);background:rgba(0,212,170,.08)}
+    .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px}
+    .hamburger span{display:block;width:20px;height:2px;background:var(--sc-text);margin:4px 0;border-radius:2px;transition:all .3s}
+    .mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:rgba(2,4,8,.96);backdrop-filter:blur(20px);z-index:99;padding:24px;flex-direction:column;gap:8px}
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{padding:14px 16px;border-radius:10px;font-size:16px;font-weight:500;color:var(--sc-dim);transition:all .2s}
+    .mobile-menu a:hover,.mobile-menu a.active{color:var(--sc-accent);background:rgba(0,212,170,.06)}
+
+    .page-header{padding:60px 0 30px;text-align:center}
+    .page-header h1{font-size:clamp(28px,4vw,42px);font-weight:900;margin-bottom:8px}
+    .page-header h1 em{font-style:normal;background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .page-header p{color:var(--sc-dim);font-size:14px}
+
+    .biz-table{width:100%;overflow-x:auto;margin-bottom:40px}
+    .biz-table table{width:100%;border-collapse:collapse;font-size:12px;min-width:800px}
+    .biz-table th,.biz-table td{border:1px solid var(--sc-border);padding:12px 10px;text-align:center;vertical-align:top}
+    .biz-table th{background:rgba(168,85,247,.08);color:#a855f7;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+    .biz-table td{background:var(--sc-card);color:var(--sc-text)}
+    .biz-table tr:hover td{background:var(--sc-card-hover)}
+    .biz-table .date-col{background:rgba(0,212,170,.06);font-weight:700;color:var(--sc-accent);min-width:80px}
+    .biz-table .brand-col{font-weight:600}
+    .biz-table .celeb-col{color:#ec4899;font-weight:600}
+    .biz-table .gmv-col{color:#22c55e;font-weight:700}
+    .biz-table ul{list-style:none;padding:0;margin:0;text-align:left}
+    .biz-table ul li{padding:2px 0;font-size:11px;line-height:1.5}
+    .biz-table ul li::before{content:'• ';color:var(--sc-muted)}
+
+    .month-section{margin-bottom:60px}
+    .month-title{font-size:20px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .month-title::before{content:'';display:block;width:4px;height:24px;background:linear-gradient(135deg,#a855f7,#ec4899);border-radius:2px}
+
+    .summary-card{background:var(--sc-card);border:1px solid var(--sc-border);border-radius:16px;padding:24px;margin-bottom:40px}
+    .summary-card h2{font-size:18px;font-weight:800;margin-bottom:16px}
+    .summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+    .summary-item{background:rgba(255,255,255,.03);border:1px solid var(--sc-border);border-radius:10px;padding:14px}
+    .summary-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .summary-item-name{font-weight:700;font-size:14px}
+    .summary-item-count{font-size:11px;color:var(--sc-muted);background:rgba(255,255,255,.05);padding:2px 8px;border-radius:4px}
+    .summary-item-gmv{font-size:13px;color:#22c55e;font-weight:700}
+    .summary-item-title{font-size:11px;color:var(--sc-dim)}
+
+    footer{padding:40px 0;border-top:1px solid var(--sc-border);text-align:center;color:var(--sc-dim);font-size:13px}
+    footer a{color:var(--sc-accent);transition:opacity .2s}
+    footer a:hover{opacity:.7}
+
+    @media(max-width:768px){
+      .nav-links{display:none}
+      .hamburger{display:block}
+      .biz-table{font-size:11px}
+      .summary-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="sc-w nav-inner">
+      <a class="logo" href="/"><img src="/favicon.svg" alt="SingClaw"/>SingClaw</a>
+      <div class="nav-links">
+        <a href="/">首页</a>
+        <a href="/36">36计</a>
+        <a href="/24">24章经</a>
+        <a href="/blog">思享录</a>
+        <a href="/game">ShrimpFi</a>
+        <a href="/crypto">Crypto</a>
+        <a href="/stars" class="active">明星追踪</a>
+        <a href="/skills-wiki.html">Skills Wiki</a>
+        <a href="/opc-onboarding.html">OPC 入门</a>
+      </div>
+      <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="菜单">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/">首页</a>
+    <a href="/36">36计</a>
+    <a href="/24">24章经</a>
+    <a href="/blog">思享录</a>
+    <a href="/game">ShrimpFi</a>
+    <a href="/crypto">Crypto</a>
+    <a href="/stars" class="active">明星追踪</a>
+    <a href="/skills-wiki.html">Skills Wiki</a>
+    <a href="/opc-onboarding.html">OPC 入门</a>
+  </div>
+
+  <div class="sc-w">
+    <div class="page-header">
+      <h1>📊 <em>商务汇总</em></h1>
+      <p>《吾岸》主演商务代言一览 · 数据来源：剁椒 Spicy</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-card sc-reveal">
+      <h2>📈 艺人商务统计 TOP 榜</h2>
+      <div class="summary-grid" id="summaryGrid">
+        <!-- 由 JS 动态生成 -->
+      </div>
+    </div>
+
+    <!-- January -->
+    <div class="month-section sc-reveal">
+      <div class="month-title">2026 年 1 月</div>
+      <div class="biz-table">
+        <table>
+          <thead>
+            <tr>
+              <th class="date-col">官宣日期</th>
+              <th>1.4 日</th>
+              <th>1.13 日</th>
+              <th>1.18 日</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="date-col"><strong>品牌</strong></td><td>花西子<br><span style="color:var(--sc-dim)">彩妆</span></td><td>膜法世家<br><span style="color:var(--sc-dim)">护肤</span></td><td>花间颂<br><span style="color:var(--sc-dim)">彩妆</span></td></tr>
+            <tr><td class="date-col"><strong>合作艺人</strong></td><td class="celeb-col">云旗</td><td class="celeb-col">郝熠然</td><td class="celeb-col">云旗</td></tr>
+            <tr><td class="date-col"><strong>title</strong></td><td>京选挚友</td><td>品牌大使</td><td>青春品牌大使</td></tr>
+            <tr><td class="date-col"><strong>战报成绩</strong></td><td class="gmv-col"><ul><li>28 小时全店 GMV711 万+</li><li>直播个人专链 GMV500 万+</li></ul></td><td class="gmv-col"><ul><li>官宣 15 分钟京东单店 600 万+</li><li>3 小时全渠道 1388 万+</li></ul></td><td class="gmv-col"><ul><li>1.8 万套 199 元礼盒秒罄</li><li>首日销售额 1700 万+</li></ul></td></tr>
+            <tr><td class="date-col"><strong>产品销售玩法</strong></td><td><ul><li>官宣日京东发售礼盒</li><li>89 元套组 赠 2 小卡 +1 透卡</li><li>399 元套组 赠 3 小卡 +1 透卡 +1 温感卡</li><li>1.10 京东直播 加赠折叠挂历</li></ul></td><td><ul><li>官宣日京东发售同款</li><li>298 元 赠 4 小卡 +1 镜子 +1 丝巾</li></ul></td><td><ul><li>官宣日天猫京东发售同款</li><li>199 元 赠 5 小卡 +1 明信片 +1 人生四格 +1 冰箱贴</li></ul></td></tr>
+            <tr><td class="date-col"><strong>品牌曝光资源</strong></td><td>6 城大屏</td><td><ul><li>9 城大屏</li><li>线下主题店</li></ul></td><td><ul><li>4 城大屏</li><li>300 家门店大屏</li></ul></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- More months placeholder - can be expanded -->
+    <div class="month-section sc-reveal">
+      <div class="month-title">2026 年 2-4 月（部分）</div>
+      <div class="biz-table">
+        <table>
+          <thead>
+            <tr>
+              <th class="date-col">官宣日期</th>
+              <th>品牌</th>
+              <th>合作艺人</th>
+              <th>title</th>
+              <th>战报成绩</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="date-col">2.1</td><td class="brand-col">巴黎欧莱雅</td><td class="celeb-col">李沛恩</td><td>品牌代言人</td><td class="gmv-col">官宣 24H 销售额 1000 万+</td></tr>
+            <tr><td class="date-col">2.1</td><td class="brand-col">C 咖蓝</td><td class="celeb-col">李沛恩</td><td>玉净透大使</td><td class="gmv-col">官宣 + 直播 1180 万+</td></tr>
+            <tr><td class="date-col">2.1</td><td class="brand-col">花西子</td><td class="celeb-col">云旗</td><td>品牌代言人</td><td class="gmv-col">总交易额 5660 万+</td></tr>
+            <tr><td class="date-col">3.1</td><td class="brand-col">心相印</td><td class="celeb-col">田栩宁</td><td>心选代言人</td><td class="gmv-col">官宣首日 5000 万+</td></tr>
+            <tr><td class="date-col">3.1</td><td class="brand-col">滋源 seeYoung</td><td class="celeb-col">邱鼎杰</td><td>品牌代言人</td><td class="gmv-col">24h 销售额 3200 万+</td></tr>
+            <tr><td class="date-col">3.1</td><td class="brand-col">飞利浦 Sonicare</td><td class="celeb-col">邱鼎杰</td><td>品牌代言人</td><td class="gmv-col">官宣首日 GMV700 万+</td></tr>
+            <tr><td class="date-col">4.1</td><td class="brand-col">逐本</td><td class="celeb-col">王昀楷/俐乐</td><td>真梦代言人</td><td class="gmv-col">官宣 24H 3300 万+</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="sc-w">
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-bottom:12px">
+        <a href="/36" style="color:var(--sc-dim);font-size:12px">养虾36计</a>
+        <a href="/24" style="color:var(--sc-dim);font-size:12px">虾24章经</a>
+        <a href="/blog" style="color:var(--sc-dim);font-size:12px">思享录</a>
+        <a href="/game" style="color:var(--sc-dim);font-size:12px">ShrimpFi</a>
+        <a href="/crypto" style="color:var(--sc-dim);font-size:12px">Crypto Alpha</a>
+        <a href="/stars" style="color:var(--sc-dim);font-size:12px">明星追踪</a>
+        <a href="/skills-wiki.html" style="color:var(--sc-dim);font-size:12px">Skills Wiki</a>
+        <a href="/opc-onboarding.html" style="color:var(--sc-dim);font-size:12px">OPC 入门</a>
+      </div>
+      <p>© 2026 <a href="/">SingClaw</a> · 明星追踪 · 数据来源：剁椒 Spicy / 微博 / 小红书</p>
+      <p style="margin-top:6px;font-size:11px">@SingClaw</p>
+    </div>
+  </footer>
+
+  <script>
+    // 艺人商务统计
+    const bizStats = [
+      {name: '云旗', count: 3, gmv: '8071 万+', title: '品牌代言人'},
+      {name: '李沛恩', count: 6, gmv: '2280 万+', title: '品牌代言人'},
+      {name: '田栩宁', count: 3, gmv: '9300 万+', title: '品牌代言人'},
+      {name: '邱鼎杰', count: 4, gmv: '3880 万+', title: '品牌代言人'},
+      {name: '冯建宇', count: 6, gmv: '-', title: '代言人/大使'},
+      {name: '林枫松/陈稳', count: 6, gmv: '1000 万+', title: '品牌大使'},
+      {name: '郝熠然', count: 2, gmv: '3888 万+', title: '品牌大使/代言人'},
+      {name: '刘轩丞', count: 2, gmv: '980 万+', title: '代言人/大使'},
+      {name: '黄星', count: 2, gmv: '2478 万+', title: '品牌大使/挚友'},
+      {name: '江衡', count: 4, gmv: '680 万+', title: '品牌大使/代言人'},
+      {name: '梓渝', count: 2, gmv: '9556 万+', title: '品牌代言人'},
+      {name: '王昀楷/俐乐', count: 2, gmv: '3300 万+', title: '品牌挚友/代言人'},
+    ];
+
+    // 按 GMV 排序
+    bizStats.sort((a,b) => {
+      const aNum = parseFloat(a.gmv) || 0;
+      const bNum = parseFloat(b.gmv) || 0;
+      return bNum - aNum;
+    });
+
+    document.getElementById('summaryGrid').innerHTML = bizStats.map(s => `
+      <div class="summary-item">
+        <div class="summary-item-header">
+          <span class="summary-item-name">${s.name}</span>
+          <span class="summary-item-count">${s.count}个代言</span>
+        </div>
+        <div class="summary-item-gmv">${s.gmv !== '-' ? '💰 ' + s.gmv : '💰 未公开'}</div>
+        <div class="summary-item-title">最高 title: ${s.title}</div>
+      </div>
+    `).join('');
+
+    // Scroll Reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.sc-reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

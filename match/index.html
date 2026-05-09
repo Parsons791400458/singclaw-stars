@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI艺人匹配 - SingClaw</title>
+  <meta name="description" content="输入品牌需求，AI智能匹配最适合的艺人合作方案">
+  <link rel="canonical" href="https://singclaw.xyz/stars/match.html">
+  <meta property="og:title" content="AI艺人匹配 - SingClaw">
+  <meta property="og:description" content="输入品牌需求，AI智能匹配最适合的艺人合作方案">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://singclaw.xyz/assets/og-image.png">
+  <meta property="og:url" content="https://singclaw.xyz/stars/match.html">
+  <meta property="og:site_name" content="SingClaw">
+  <meta property="og:locale" content="zh_CN">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "AI艺人匹配 - SingClaw",
+    "description": "输入品牌需求，AI智能匹配最适合的艺人合作方案",
+    "url": "https://singclaw.xyz/stars/match.html",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "SingClaw",
+      "url": "https://singclaw.xyz"
+    }
+  }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a1a; color: #e8e8f0; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; min-height: 100vh; }
+    .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+    h1 { text-align: center; font-size: 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+    .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 36px; }
+    .form-group { margin-bottom: 24px; }
+    label { display: block; font-size: 14px; color: #aaa; margin-bottom: 8px; }
+    label .required { color: #e74c3c; margin-left: 2px; }
+    input[type="text"], textarea, select {
+      width: 100%; padding: 12px 16px; background: #16162a; border: 1px solid #2a2a4a;
+      border-radius: 8px; color: #e8e8f0; font-size: 15px; transition: border-color 0.2s; outline: none;
+    }
+    input[type="text"]:focus, textarea:focus, select:focus { border-color: #667eea; }
+    textarea { resize: vertical; min-height: 80px; }
+    select { cursor: pointer; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    .submit-btn {
+      width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none; border-radius: 8px; color: #fff; font-size: 16px; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s, transform 0.1s;
+    }
+    .submit-btn:hover { opacity: 0.9; }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    #result { display: none; margin-top: 32px; }
+    .result-header { font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #667eea; }
+    .match-card { background: #16162a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 20px; margin-bottom: 16px; transition: border-color 0.2s; }
+    .match-card:hover { border-color: #667eea; }
+    .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .match-name { font-size: 18px; font-weight: 600; }
+    .match-score { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+    .match-category { color: #888; font-size: 13px; margin-bottom: 8px; }
+    .match-reasons { margin-top: 12px; }
+    .match-reason { display: inline-block; background: #1e1e3a; color: #bbb; padding: 4px 10px; border-radius: 6px; font-size: 12px; margin: 4px 4px 4px 0; }
+    .match-bio { color: #999; font-size: 13px; margin-top: 8px; line-height: 1.6; }
+    .match-business { color: #777; font-size: 12px; margin-top: 6px; line-height: 1.5; }
+    .loading { text-align: center; padding: 40px; }
+    .spinner { width: 40px; height: 40px; border: 3px solid #2a2a4a; border-top-color: #667eea; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-msg { background: #2a1a1a; border: 1px solid #e74c3c; border-radius: 8px; padding: 12px 16px; color: #e74c3c; margin-bottom: 16px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/stars" style="color:#888;text-decoration:none;font-size:14px;">← 返回明星站</a>
+    <h1>🤖 AI艺人匹配</h1>
+    <p class="subtitle">输入品牌需求，AI智能推荐最合适的艺人合作方案</p>
+    <div class="error-msg" id="errorMsg"></div>
+    <form id="matchForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>品牌名称 <span class="required">*</span></label>
+          <input type="text" id="brand_name" placeholder="例如：完美日记" required>
+        </div>
+        <div class="form-group">
+          <label>行业品类 <span class="required">*</span></label>
+          <select id="brand_category" required>
+            <option value="">选择行业</option>
+            <option value="美妆护肤">美妆护肤</option>
+            <option value="3C数码">3C数码</option>
+            <option value="汽车">汽车</option>
+            <option value="食品饮料">食品饮料</option>
+            <option value="服饰时尚">服饰时尚</option>
+            <option value="运动户外">运动户外</option>
+            <option value="母婴">母婴</option>
+            <option value="家居">家居</option>
+            <option value="游戏">游戏</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>预算范围</label>
+          <select id="budget_range">
+            <option value="">不限</option>
+            <option value="50万以下">50万以下</option>
+            <option value="50-100万">50-100万</option>
+            <option value="100-300万">100-300万</option>
+            <option value="300-500万">300-500万</option>
+            <option value="500万以上">500万以上</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>合作类型</label>
+          <select id="cooperation_type">
+            <option value="">不限</option>
+            <option value="代言人">代言人</option>
+            <option value="品牌大使">品牌大使</option>
+            <option value="品牌挚友">品牌挚友</option>
+            <option value="单次推广">单次推广</option>
+            <option value="直播带货">直播带货</option>
+            <option value="长期合作">长期合作</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>目标消费者</label>
+        <input type="text" id="target_audience" placeholder="例如：18-25岁女性，一二线城市">
+      </div>
+      <div class="form-group">
+        <label>合作目的</label>
+        <select id="campaign_goal">
+          <option value="">不限</option>
+          <option value="品牌曝光">品牌曝光</option>
+          <option value="销量转化">销量转化</option>
+          <option value="年轻化">年轻化</option>
+          <option value="品类拓展">品类拓展</option>
+          <option value="事件营销">事件营销</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>偏好要求</label>
+        <textarea id="preferences" placeholder="例如：希望艺人形象阳光健康，有运动背景优先"></textarea>
+      </div>
+      <div class="form-group">
+        <label>联系方式（选填）</label>
+        <input type="text" id="contact_info" placeholder="邮箱或微信号">
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">🔮 开始AI匹配</button>
+    </form>
+    <div id="result"><div class="result-header">✨ 匹配结果</div><div id="matchList"></div></div>
+  </div>
+  <script>
+    const SUPABASE_URL = 'https://wtorgfihulbzqxaosdgb.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_VShavdqU8IgdrCBGTNas7g_0y61usOd';
+
+    document.getElementById('matchForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const err = document.getElementById('errorMsg');
+      const res = document.getElementById('result');
+      const list = document.getElementById('matchList');
+      err.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = '⏳ AI匹配中...';
+      list.innerHTML = '<div class="loading"><div class="spinner"></div><div>正在读取艺人数据库...</div></div>';
+      res.style.display = 'block';
+
+      const d = {
+        brand_name: document.getElementById('brand_name').value,
+        brand_category: document.getElementById('brand_category').value,
+        budget_range: document.getElementById('budget_range').value,
+        cooperation_type: document.getElementById('cooperation_type').value,
+        target_audience: document.getElementById('target_audience').value,
+        campaign_goal: document.getElementById('campaign_goal').value,
+        preferences: document.getElementById('preferences').value,
+        contact_info: document.getElementById('contact_info').value,
+      };
+
+      try {
+        // 1. 从 Supabase 读取艺人数据
+        const r = await fetch(SUPABASE_URL + '/rest/v1/celebrities?select=*', {
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+        });
+        if (!r.ok) throw new Error('无法获取艺人数据');
+        const celebs = await r.json();
+
+        // 2. 规则匹配引擎
+        const matches = doMatch(celebs, d);
+
+        // 3. 保存需求到 Supabase
+        try {
+          await fetch(SUPABASE_URL + '/rest/v1/brand_requests', {
+            method: 'POST',
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+            body: JSON.stringify({
+              brand_name: d.brand_name, brand_category: d.brand_category,
+              target_audience: d.target_audience || '', budget_range: d.budget_range || '',
+              cooperation_type: d.cooperation_type || '', campaign_goal: d.campaign_goal || '',
+              preferences: d.preferences || '', contact_info: d.contact_info || '',
+              status: 'completed',
+              matched_celebrities: JSON.stringify(matches.slice(0, 5).map(m => ({ name: m.name, score: m.score, reasons: m.reasons })))
+            })
+          });
+        } catch (e) { console.warn('保存失败，不影响展示', e); }
+
+        // 4. 渲染结果
+        if (!matches.length) {
+          list.innerHTML = '<div style="text-align:center;color:#888;padding:20px;">暂无匹配艺人，请调整筛选条件</div>';
+        } else {
+          list.innerHTML = matches.map((m, i) =>
+            '<div class="match-card">' +
+              '<div class="match-header"><span class="match-name">' + (i + 1) + '. ' + m.name + '</span><span class="match-score">' + m.score + '分</span></div>' +
+              '<div class="match-category">' + (m.category || '') + '</div>' +
+              '<div class="match-reasons">' + m.reasons.map(r => '<span class="match-reason">' + r + '</span>').join('') + '</div>' +
+              (m.bio ? '<div class="match-bio">' + m.bio + '</div>' : '') +
+              (m.biz ? '<div class="match-business">📌 近期商务：' + m.biz + '</div>' : '') +
+            '</div>'
+          ).join('');
+        }
+      } catch (e) {
+        err.textContent = '❌ ' + e.message;
+        err.style.display = 'block';
+        res.style.display = 'none';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔮 开始AI匹配';
+      }
+    });
+
+    // 匹配引擎
+    function doMatch(celebs, req) {
+      const { brand_category, budget_range, cooperation_type, campaign_goal } = req;
+      return celebs
+        .filter(c => c.id !== 65) // 跳过测试数据
+        .map(c => {
+          let s = 0, r = [];
+          const cat = (c.category || '').toLowerCase();
+          const biz = (c.recent_business || '').toLowerCase();
+          const desc = (c.description || '').toLowerCase();
+          const bio = (c.bio || '').toLowerCase();
+
+          // 品类匹配
+          if (brand_category === '美妆护肤') {
+            if (/女流量|男流量/.test(cat)) { s += 25; r.push('美妆核心受众'); }
+            if (/美妆|护肤|香水|彩妆|防晒/.test(biz)) { s += 20; r.push('美妆/护肤经验'); }
+          } else if (brand_category === '3C数码') {
+            if (/男流量|品质艺人/.test(cat)) { s += 20; r.push('3C品类匹配'); }
+            if (/华为|小米|手机|vivo|oppo|redmi/.test(biz)) { s += 25; r.push('3C合作经验'); }
+          } else if (brand_category === '汽车') {
+            if (/品质艺人/.test(cat)) { s += 20; r.push('成熟形象'); }
+            if (/汽车|鸿蒙|智界|尚界|享界/.test(biz)) { s += 25; r.push('汽车品牌经验'); }
+          } else if (brand_category === '运动户外') {
+            if (/体育明星/.test(cat)) { s += 30; r.push('体育明星直接匹配'); }
+            if (/运动|体育|安踏|阿迪|李宁|fila|nike|户外/.test(biz)) { s += 20; r.push('运动品牌经验'); }
+          } else if (brand_category === '食品饮料') {
+            if (/食品|饮料|蒙牛|伊利|百事|乐事/.test(biz)) { s += 20; r.push('食品饮料经验'); }
+          } else if (brand_category === '服饰时尚') {
+            if (/dior|chanel|gucci|宝格丽|lv|范思哲|奢/.test(biz)) { s += 25; r.push('奢品合作经验'); }
+            if (/女流量|男流量/.test(cat)) { s += 15; r.push('时尚度高'); }
+          } else if (brand_category === '母婴') {
+            if (/母婴|亲子/.test(biz)) { s += 25; r.push('母婴经验'); }
+            if (/品质艺人/.test(cat)) { s += 10; r.push('品质艺人适合母婴'); }
+          } else if (brand_category === '家居') {
+            if (/家居|家电/.test(biz)) { s += 20; r.push('家居家电经验'); }
+          } else if (brand_category === '游戏') {
+            if (/游戏|电竞|手游/.test(biz)) { s += 25; r.push('游戏经验'); }
+            if (/男流量/.test(cat)) { s += 15; r.push('游戏受众重叠'); }
+          }
+
+          // 预算
+          if (budget_range === '50万以下' && /短剧明星/.test(cat)) { s += 10; r.push('性价比优选'); }
+          if (budget_range === '500万以上' && (/男流量|女流量/.test(cat))) { s += 10; r.push('顶流匹配'); }
+
+          // 合作类型
+          if (cooperation_type === '代言人' && /代言人|全球/.test(biz)) { s += 10; r.push('代言人级别'); }
+
+          // 合作目的
+          if (campaign_goal === '品牌曝光' && /顶流|国民|热搜/.test(bio + desc)) { s += 10; r.push('高曝光量'); }
+          if (campaign_goal === '销量转化' && /售罄|gmv|销售/.test(biz)) { s += 15; r.push('带货能力强'); }
+          if (campaign_goal === '年轻化' && /男流量|女流量/.test(cat)) { s += 10; r.push('年轻流量'); }
+
+          // 热度 & 活跃度
+          if ((c.hot_news || '').length > 10) { s += 5; r.push('近期热度'); }
+          if ((c.recent_business || '').split(/[，。、]/).filter(Boolean).length >= 5) { s += 5; r.push('商务活跃'); }
+
+          return { name: c.name, category: c.category, bio: (c.bio || '').substring(0, 80), biz: c.recent_business, score: Math.min(s, 100), reasons: r };
+        })
+        .filter(x => x.score > 10)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+    }
+  </script>
+</body>
+</html>

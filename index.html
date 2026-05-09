@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>明星追踪 · SingClaw</title>
+  <meta name="description" content="明星商务情报 · 互动匹配 · 艺人资源库"/>
+  <meta property="og:title" content="明星追踪 · SingClaw"/>
+  <meta property="og:description" content="多渠道明星动态采集与展示"/>
+  <meta property="og:url" content="https://singclaw.xyz/stars"/>
+  <meta property="og:site_name" content="SingClaw"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:image" content="https://singclaw.xyz/assets/og-image.png"/>
+  <link rel="canonical" href="https://singclaw.xyz/stars"/>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebPage","name":"明星追踪","url":"https://singclaw.xyz/stars","description":"明星商务情报与艺人资源平台","publisher":{"@type":"Organization","name":"SingClaw","url":"https://singclaw.xyz"}}
+  </script>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <link rel="stylesheet" href="/css/design-tokens.css"/>
+  <style>
+    /* ═══════════════════════════════════════
+       Stars Page – Tag 1/2/3 Layout
+       ═══════════════════════════════════════ */
+
+    /* ── Hero ── */
+    .stars-hero{padding:48px 0 32px;text-align:center;position:relative}
+    .stars-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 50% 0%,rgba(168,85,247,.08),transparent);pointer-events:none}
+    .stars-hero h1{font-size:clamp(28px,4vw,44px);font-weight:900;margin-bottom:10px}
+    .stars-hero h1 em{font-style:normal;background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .stars-hero p{color:var(--sc-dim);font-size:15px;max-width:500px;margin:0 auto}
+
+    /* ── Tab Bar ── */
+    .tab-bar{display:flex;gap:4px;padding:4px;background:var(--sc-card);border:1px solid var(--sc-border);border-radius:14px;max-width:600px;margin:0 auto 40px}
+    .tab-btn{flex:1;padding:12px 16px;border:none;background:transparent;color:var(--sc-dim);font-size:14px;font-weight:600;border-radius:11px;cursor:pointer;transition:all .25s var(--sc-ease);font-family:var(--sc-font)}
+    .tab-btn:hover{color:var(--sc-text);background:rgba(255,255,255,.03)}
+    .tab-btn.active{background:rgba(0,212,170,.12);color:var(--sc-accent);box-shadow:0 2px 12px rgba(0,212,170,.08)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block;animation:fadeUp .4s var(--sc-ease)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── Section ── */
+    .section{margin-bottom:40px}
+    .section-label{font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:var(--sc-accent);font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .section-label::before{content:'';width:4px;height:14px;background:var(--sc-accent);border-radius:2px}
+
+    /* ── News Cards (Tag 1) ── */
+    .news-list{display:flex;flex-direction:column;gap:12px}
+    .news-card{background:var(--sc-card);border:1px solid var(--sc-border);border-radius:14px;padding:20px;transition:all .25s var(--sc-ease)}
+    .news-card:hover{border-color:rgba(168,85,247,.25);background:var(--sc-card-hover)}
+    .news-card .news-tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;margin-bottom:10px}
+    .news-tag.deal{background:rgba(0,212,170,.12);color:var(--sc-accent)}
+    .news-tag.event{background:rgba(168,85,247,.12);color:var(--sc-purple)}
+    .news-tag.hot{background:rgba(239,68,68,.12);color:var(--sc-danger)}
+    .news-tag.trend{background:rgba(251,191,36,.12);color:var(--sc-gold)}
+    .news-card h3{font-size:16px;font-weight:700;margin-bottom:6px}
+    .news-card p{font-size:13px;color:var(--sc-dim);line-height:1.6}
+    .news-card .news-meta{font-size:12px;color:var(--sc-muted);margin-top:10px;display:flex;gap:16px}
+
+    /* ── Hot Celebs (Tag 1) ── */
+    .hot-celeb-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+    .hot-celeb-chip{flex:0 0 auto;scroll-snap-align:start;background:var(--sc-card);border:1px solid var(--sc-border);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;transition:all .25s var(--sc-ease);min-width:200px}
+    .hot-celeb-chip:hover{border-color:rgba(168,85,247,.3)}
+    .hot-celeb-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0}
+    .hot-celeb-info .name{font-weight:700;font-size:14px}
+    .hot-celeb-info .heat{font-size:12px;color:var(--sc-danger);margin-top:2px}
+
+    /* ── Rec Wall (Tag 1) ── */
+    .rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .rec-card{background:var(--sc-card);border:1px solid var(--sc-border);border-radius:14px;padding:20px;transition:all .3s var(--sc-ease)}
+    .rec-card:hover{border-color:var(--sc-accent-border);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+    .rec-card .rec-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .rec-avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0}
+    .rec-name{font-weight:700;font-size:15px}
+    .rec-type{font-size:12px;color:var(--sc-dim)}
+    .rec-body{font-size:13px;color:var(--sc-dim);line-height:1.6}
+    .rec-body strong{color:var(--sc-text);font-weight:600}
+    .rec-case{margin-top:12px;padding:10px 14px;background:rgba(0,212,170,.04);border:1px solid rgba(0,212,170,.08);border-radius:8px;font-size:12px;color:var(--sc-dim)}
+    .rec-case strong{color:var(--sc-accent)}
+
+    /* ── Bot (Tag 2) ── */
+    .bot-container{max-width:700px;margin:0 auto}
+    .bot-chat{background:var(--sc-card);border:1px solid var(--sc-border);border-radius:18px;padding:28px;margin-bottom:24px}
+    .bot-msg{display:flex;gap:12px;margin-bottom:20px}
+    .bot-msg.user{flex-direction:row-reverse}
+    .bot-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .bot-avatar.claw{background:linear-gradient(135deg,var(--sc-accent),var(--sc-accent2));color:#000}
+    .bot-avatar.usr{background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff}
+    .bot-bubble{max-width:80%;padding:14px 18px;border-radius:14px;font-size:14px;line-height:1.6}
+    .bot-msg:not(.user) .bot-bubble{background:rgba(255,255,255,.05);border:1px solid var(--sc-border);border-top-left-radius:4px}
+    .bot-msg.user .bot-bubble{background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.15);border-top-right-radius:4px}
+    .bot-input-row{display:flex;gap:10px}
+    .bot-input{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--sc-border);border-radius:12px;padding:14px 18px;color:var(--sc-text);font-size:14px;font-family:var(--sc-font);outline:none;transition:border-color .2s}
+    .bot-input:focus{border-color:var(--sc-accent)}
+    .bot-input::placeholder{color:var(--sc-muted)}
+    .bot-send{padding:14px 24px;background:linear-gradient(135deg,var(--sc-accent),var(--sc-accent2));color:#000;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--sc-font);transition:all .2s var(--sc-ease)}
+    .bot-send:hover{transform:translateY(-1px);box-shadow:0 6px 20px var(--sc-accent-glow)}
+
+    /* ── Quick Options ── */
+    .quick-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .quick-opt{padding:8px 16px;border-radius:20px;border:1px solid var(--sc-border);background:transparent;color:var(--sc-dim);font-size:13px;cursor:pointer;transition:all .2s;font-family:var(--sc-font)}
+    .quick-opt:hover{border-color:var(--sc-accent);color:var(--sc-accent);background:var(--sc-accent-bg)}
+
+    /* ── Cases (Tag 2) ── */
+    .case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+    .case-card{background:var(--sc-card);border:1px solid var(--sc-border);border-radius:14px;padding:22px;transition:all .25s var(--sc-ease)}
+    .case-card:hover{border-color:rgba(168,85,247,.25);background:var(--sc-card-hover)}
+    .case-card h3{font-size:15px;font-weight:700;margin-bottom:8px}
+    .case-card p{font-size:13px;color:var(--sc-dim);line-height:1.6}
+    .case-metrics{display:flex;gap:16px;margin-top:12px}
+    .case-metric{text-align:center}
+    .case-metric .val{font-size:18px;font-weight:800;color:var(--sc-accent)}
+    .case-metric .lbl{font-size:11px;color:var(--sc-muted);margin-top:2px}
+
+    /* ── Resource Library (Tag 3) ── */
+    .resource-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+    .resource-card{background:var(--sc-card);border:1px solid var(--sc-border);border-radius:16px;padding:24px;transition:all .3s var(--sc-ease);cursor:default}
+    .resource-card:hover{border-color:rgba(168,85,247,.3);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+    .resource-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+    .resource-card h3{font-size:17px;font-weight:700;margin-bottom:8px}
+    .resource-card .desc{font-size:13px;color:var(--sc-dim);line-height:1.6;margin-bottom:14px}
+    .resource-examples{display:flex;gap:8px;flex-wrap:wrap}
+    .example-tag{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500;background:rgba(255,255,255,.04);color:var(--sc-dim);border:1px solid var(--sc-border)}
+
+    /* Resource card color variants */
+    .rc-traffic .resource-icon{background:linear-gradient(135deg,#ef4444,#f97316)}
+    .rc-sports .resource-icon{background:linear-gradient(135deg,#22c55e,#06b6d4)}
+    .rc-quality .resource-icon{background:linear-gradient(135deg,#a855f7,#6366f1)}
+    .rc-overseas-drama .resource-icon{background:linear-gradient(135deg,#ec4899,#f43f5e)}
+    .rc-trending .resource-icon{background:linear-gradient(135deg,#fbbf24,#f97316)}
+    .rc-shortdrama .resource-icon{background:linear-gradient(135deg,#8b5cf6,#a855f7)}
+    .rc-intl .resource-icon{background:linear-gradient(135deg,#3b82f6,#06b6d4)}
+    .rc-ecom .resource-icon{background:linear-gradient(135deg,#f97316,#ef4444)}
+
+    /* ── Footer ── */
+    footer{padding:48px 0 36px;border-top:1px solid var(--sc-border);text-align:center;color:var(--sc-dim);font-size:13px;position:relative}
+    footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--sc-accent),transparent)}
+    footer a{color:var(--sc-accent);transition:opacity .2s}
+    footer a:hover{opacity:.7}
+    .footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:14px;font-size:13px}
+    .footer-links a{color:var(--sc-dim);transition:color .2s}
+    .footer-links a:hover{color:var(--sc-accent)}
+
+    /* ── Responsive ── */
+    @media(max-width:768px){
+      .nav-links{display:none}
+      .hamburger{display:block}
+      .tab-bar{max-width:100%;border-radius:12px}
+      .tab-btn{padding:10px 8px;font-size:13px}
+      .rec-grid{grid-template-columns:1fr}
+      .case-grid{grid-template-columns:1fr}
+      .resource-grid{grid-template-columns:1fr}
+      .bot-msg{flex-direction:column!important;align-items:flex-start!important}
+      .bot-msg.user{align-items:flex-end!important}
+      .bot-bubble{max-width:95%!important}
+      .bot-input-row{flex-direction:column}
+      .bot-send{width:100%}
+      .case-metrics{flex-wrap:wrap}
+    }
+
+    @media(max-width:480px){
+      .tab-btn{font-size:12px;padding:10px 6px}
+      .stars-hero{padding:36px 0 24px}
+      .hot-celeb-chip{min-width:170px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="sc-w nav-inner">
+      <a class="logo" href="/"><img src="/favicon.svg" alt="SingClaw"/>SingClaw</a>
+      <div class="nav-links">
+        <a href="/">首页</a>
+        <a href="/36">养虾36计</a>
+        <a href="/24">虾24章经</a>
+        <a href="/blog">思享录 📝</a>
+        <a href="/game">ShrimpFi 🎮</a>
+        <a href="/crypto">Crypto Alpha 📊</a>
+        <a href="/crypto/bn-alpha.html">BN Alpha</a>
+        <a href="/crypto/watchlist.html">观察池 🔭</a>
+        <a href="/stars" class="active">明星追踪 ⭐</a>
+        <a href="/skills-wiki.html">Skills Wiki 🧠</a>
+        <a href="/opc-onboarding.html">OPC 入门 🚀</a>
+      </div>
+      <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="菜单">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/">🏠 首页</a>
+    <a href="/36" onclick="this.parentElement.classList.remove('open')">📖 养虾36计</a>
+    <a href="/24" onclick="this.parentElement.classList.remove('open')">📜 虾24章经</a>
+    <a href="/blog" onclick="this.parentElement.classList.remove('open')">📝 思享录</a>
+    <a href="/game" onclick="this.parentElement.classList.remove('open')">🎮 ShrimpFi</a>
+    <a href="/crypto" onclick="this.parentElement.classList.remove('open')">📊 Crypto Alpha</a>
+    <a href="/crypto/bn-alpha.html" onclick="this.parentElement.classList.remove('open')">📈 BN Alpha</a>
+    <a href="/stars" class="active" onclick="this.parentElement.classList.remove('open')">⭐ 明星追踪</a>
+    <a href="/crypto/watchlist.html" onclick="this.parentElement.classList.remove('open')">🔭 观察池</a>
+    <a href="/skills-wiki.html" onclick="this.parentElement.classList.remove('open')">🧠 Skills Wiki</a>
+    <a href="/opc-onboarding.html" onclick="this.parentElement.classList.remove('open')">🚀 OPC 入门</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="stars-hero">
+    <div class="sc-w">
+      <h1 class="sc-reveal">🌟 <em>明星追踪</em></h1>
+      <p class="sc-reveal">商务情报 · 智能匹配 · 艺人资源 — 一站式明星营销平台</p>
+    </div>
+  </section>
+
+  <!-- Tab Bar -->
+  <div class="sc-w">
+    <div class="tab-bar sc-reveal" role="tablist">
+      <button class="tab-btn active" data-tab="tag1" role="tab" aria-selected="true">📡 商务情报</button>
+      <button class="tab-btn" data-tab="tag2" role="tab" aria-selected="false">🤖 互动匹配</button>
+      <button class="tab-btn" data-tab="tag3" role="tab" aria-selected="false">📚 艺人资源库</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAG 1: 商务情报区 ═══════════ -->
+  <div class="sc-w">
+    <div class="tab-panel active" id="tag1">
+
+      <!-- 品牌 × 明星 商务新闻 -->
+      <div class="section">
+        <div class="section-label sc-reveal">品牌 × 明星 商务动态</div>
+        <div class="news-list">
+          <div class="news-card sc-reveal">
+            <span class="news-tag deal">官宣代言</span>
+            <h3>某头部美妆品牌 × 流量女艺人</h3>
+            <p>国际美妆品牌正式官宣新一代品牌代言人，社交媒体话题阅读量 24 小时内突破 3 亿，粉丝购买力验证。</p>
+            <div class="news-meta"><span>📅 2026-05-06</span><span>🔥 话题 3.2亿</span><span>📊 转化预估 A+</span></div>
+          </div>
+          <div class="news-card sc-reveal">
+            <span class="news-tag event">品牌活动</span>
+            <h3>奢侈品牌大秀 — 多位艺人出席</h3>
+            <p>某奢侈品牌 2026 秋冬大秀在上海举办，邀请 5 位品牌大使及好友出席，红毯话题登上微博热搜前三。</p>
+            <div class="news-meta"><span>📅 2026-05-04</span><span>🔥 热搜 #3</span><span>📊 曝光 5亿+</span></div>
+          </div>
+          <div class="news-card sc-reveal">
+            <span class="news-tag deal">商务续约</span>
+            <h3>运动品牌 × 体育明星 续约三年</h3>
+            <p>某运动品牌宣布与奥运冠军续约，合作周期延长至 2029 年，涵盖全线产品代言及联名款开发。</p>
+            <div class="news-meta"><span>📅 2026-05-02</span><span>📊 合作周期 3 年</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 近期热点艺人 -->
+      <div class="section">
+        <div class="section-label sc-reveal">🔥 近期热点艺人</div>
+        <div class="hot-celeb-row">
+          <div class="hot-celeb-chip sc-reveal">
+            <div class="hot-celeb-avatar">王</div>
+            <div class="hot-celeb-info"><div class="name">王楚钦</div><div class="heat">🔥 热度 ↑128%</div></div>
+          </div>
+          <div class="hot-celeb-chip sc-reveal">
+            <div class="hot-celeb-avatar">孙</div>
+            <div class="hot-celeb-info"><div class="name">孙颖莎</div><div class="heat">🔥 热度 ↑95%</div></div>
+          </div>
+          <div class="hot-celeb-chip sc-reveal">
+            <div class="hot-celeb-avatar">汪</div>
+            <div class="hot-celeb-info"><div class="name">汪苏泷</div><div class="heat">🔥 热度 ↑76%</div></div>
+          </div>
+          <div class="hot-celeb-chip sc-reveal">
+            <div class="hot-celeb-avatar">周</div>
+            <div class="hot-celeb-info"><div class="name">周杰伦</div><div class="heat">🔥 热度 ↑62%</div></div>
+          </div>
+          <div class="hot-celeb-chip sc-reveal">
+            <div class="hot-celeb-avatar">张</div>
+            <div class="hot-celeb-info"><div class="name">张雨绮</div><div class="heat">🔥 热度 ↑54%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 艺人推荐墙 -->
+      <div class="section">
+        <div class="section-label sc-reveal">⭐ 艺人推荐墙</div>
+        <div class="rec-grid">
+          <div class="rec-card sc-reveal">
+            <div class="rec-header">
+              <div class="rec-avatar">汪</div>
+              <div><div class="rec-name">汪苏泷</div><div class="rec-type">品质艺人 · 歌手/音乐人</div></div>
+            </div>
+            <div class="rec-body">
+              <strong>推荐用法：</strong>音乐类品牌合作、综艺常驻嘉宾、品牌主题曲定制<br/>
+              <strong>推荐理由：</strong>国民度高、作品传唱度强、粉丝画像覆盖 18-35 岁核心消费人群，且商业口碑极佳。
+            </div>
+            <div class="rec-case"><strong>相关案例：</strong>某饮料品牌 2025 年合作，歌曲 MV 植入，播放量破亿，品牌搜索量提升 40%。</div>
+          </div>
+          <div class="rec-card sc-reveal">
+            <div class="rec-header">
+              <div class="rec-avatar">王</div>
+              <div><div class="rec-name">王楚钦</div><div class="rec-type">体育明星 · 乒乓球运动员</div></div>
+            </div>
+            <div class="rec-body">
+              <strong>推荐用法：</strong>运动品牌代言、健康类品牌合作、体育综艺嘉宾<br/>
+              <strong>推荐理由：</strong>奥运冠军、年轻且形象正面，粉丝粘性强，适合运动/健康/科技品类。
+            </div>
+            <div class="rec-case"><strong>相关案例：</strong>某运动品牌联名球鞋发售当日售罄，话题阅读量破 2 亿。</div>
+          </div>
+          <div class="rec-card sc-reveal">
+            <div class="rec-header">
+              <div class="rec-avatar">张</div>
+              <div><div class="rec-name">张雨绮</div><div class="rec-type">电商明星 · 演员/直播达人</div></div>
+            </div>
+            <div class="rec-body">
+              <strong>推荐用法：</strong>直播带货合作、美妆/时尚品牌推荐、综艺嘉宾<br/>
+              <strong>推荐理由：</strong>直爽人设深入人心，直播间转化率高，适合美妆/服饰/生活方式品类。
+            </div>
+            <div class="rec-case"><strong>相关案例：</strong>某美妆品牌专场直播 GMV 破 3000 万，ROI 1:5.2。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ TAG 2: 互动区 ═══════════ -->
+    <div class="tab-panel" id="tag2">
+
+      <!-- 互动 Bot -->
+      <div class="section">
+        <div class="section-label sc-reveal">🤖 明星匹配助手</div>
+        <div class="bot-container">
+          <div class="bot-chat sc-reveal" id="botChat">
+            <div class="bot-msg">
+              <div class="bot-avatar claw">🐾</div>
+              <div class="bot-bubble">你好！我是 SingClaw 明星匹配助手。帮你找到最适合品牌的明星合作方案 💡<br/><br/>请先告诉我：<strong>你的品牌是什么类型的？</strong></div>
+            </div>
+            <div class="quick-options" id="step1Options">
+              <button class="quick-opt" onclick="botNext('美妆/护肤')">美妆 / 护肤</button>
+              <button class="quick-opt" onclick="botNext('服饰/时尚')">服饰 / 时尚</button>
+              <button class="quick-opt" onclick="botNext('食品饮料')">食品 / 饮料</button>
+              <button class="quick-opt" onclick="botNext('3C数码')">3C / 数码</button>
+              <button class="quick-opt" onclick="botNext('运动健康')">运动 / 健康</button>
+              <button class="quick-opt" onclick="botNext('其他')">其他类型</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 同行案例 -->
+      <div class="section">
+        <div class="section-label sc-reveal">📊 过往案例参考</div>
+        <div class="case-grid">
+          <div class="case-card sc-reveal">
+            <h3>💄 美妆品牌 × 流量明星 战报</h3>
+            <p>某国际美妆品牌签约当红流量女艺人作为品牌代言人，首发 campaign 采用"官宣 + 短视频 + 直播"三段式打法。</p>
+            <div class="case-metrics">
+              <div class="case-metric"><div class="val">3.2亿</div><div class="lbl">话题阅读</div></div>
+              <div class="case-metric"><div class="val">180%</div><div class="lbl">销量增长</div></div>
+              <div class="case-metric"><div class="val">1:4.8</div><div class="lbl">ROI</div></div>
+            </div>
+          </div>
+          <div class="case-card sc-reveal">
+            <h3>🏃 运动品牌 × 体育明星 战报</h3>
+            <p>某运动品牌与奥运冠军合作推出联名款，采用"预告 → 限量发售 → 粉丝晒单"的营销节奏。</p>
+            <div class="case-metrics">
+              <div class="case-metric"><div class="val">2.1亿</div><div class="lbl">话题阅读</div></div>
+              <div class="case-metric"><div class="val">售罄</div><div class="lbl">首发售罄</div></div>
+              <div class="case-metric"><div class="val">1:6.3</div><div class="lbl">ROI</div></div>
+            </div>
+          </div>
+          <div class="case-card sc-reveal">
+            <h3>🍵 饮料品牌 × 品质艺人 战报</h3>
+            <p>某国民饮料品牌邀请实力派歌手创作品牌主题曲，配合综艺植入与线下活动，打造"品牌音乐"IP。</p>
+            <div class="case-metrics">
+              <div class="case-metric"><div class="val">1.5亿</div><div class="lbl">MV 播放</div></div>
+              <div class="case-metric"><div class="val">40%</div><div class="lbl">搜索提升</div></div>
+              <div class="case-metric"><div class="val">1:3.9</div><div class="lbl">ROI</div></div>
+            </div>
+          </div>
+          <div class="case-card sc-reveal">
+            <h3>📱 电商品牌 × 带货明星 战报</h3>
+            <p>某电商平台邀请带货达人参与 618 大促专场，采用"预热种草 → 直播转化 → 社交扩散"全链路策略。</p>
+            <div class="case-metrics">
+              <div class="case-metric"><div class="val">3000万</div><div class="lbl">GMV</div></div>
+              <div class="case-metric"><div class="val">5.2</div><div class="lbl">ROI</div></div>
+              <div class="case-metric"><div class="val">280万</div><div class="lbl">峰值在线</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ TAG 3: 艺人资源库 ═══════════ -->
+    <div class="tab-panel" id="tag3">
+      <div class="section">
+        <div class="section-label sc-reveal">📚 明星艺人资源库 · 8 大分类</div>
+        <div class="resource-grid">
+
+          <div class="resource-card rc-traffic sc-reveal">
+            <div class="resource-icon">⚡</div>
+            <h3>流量明星</h3>
+            <div class="desc">超高人气数据、粉丝粘性强、粉丝氪金能力强、社交媒体话题热度高的男女艺人。适合快消、美妆、服饰等需要爆发式曝光的品类。</div>
+            <div class="resource-examples">
+              <span class="example-tag">粉丝经济</span>
+              <span class="example-tag">高话题量</span>
+              <span class="example-tag">爆发式曝光</span>
+              <span class="example-tag">品牌代言</span>
+            </div>
+          </div>
+
+          <div class="resource-card rc-sports sc-reveal">
+            <div class="resource-icon">🏆</div>
+            <h3>体育明星</h3>
+            <div class="desc">有知名度、有粉丝的运动员，如孙颖莎、王楚钦等。形象正面、国民认知度高，适合运动、健康、科技品类合作。</div>
+            <div class="resource-examples">
+              <span class="example-tag">奥运冠军</span>
+              <span class="example-tag">正面形象</span>
+              <span class="example-tag">运动品牌</span>
+              <span class="example-tag">国民认知</span>
+            </div>
+          </div>
+
+          <div class="resource-card rc-quality sc-reveal">
+            <div class="resource-icon">🎵</div>
+            <h3>品质艺人</h3>
+            <div class="desc">有作品、有实力、国民度高，如汪苏泷、周杰伦等。适合音乐合作、品牌主题曲、长期深度绑定。</div>
+            <div class="resource-examples">
+              <span class="example-tag">国民度高</span>
+              <span class="example-tag">作品驱动</span>
+              <span class="example-tag">品牌音乐</span>
+              <span class="example-tag">长期合作</span>
+            </div>
+          </div>
+
+          <div class="resource-card rc-overseas-drama sc-reveal">
+            <div class="resource-icon">🌏</div>
+            <h3>环大陆明星</h3>
+            <div class="desc">拍偶像剧/耽改剧而流量飞涨的男艺人，通常作品不在内娱播出。适合出海品牌、国际化 campaign、年轻化营销。</div>
+            <div class="resource-examples">
+              <span class="example-tag">海外流量</span>
+              <span class="example-tag">耽改/偶像剧</span>
+              <span class="example-tag">出海品牌</span>
+              <span class="example-tag">年轻受众</span>
+            </div>
+          </div>
+
+          <div class="resource-card rc-trending sc-reveal">
+            <div class="resource-icon">📈</div>
+            <h3>近期热度上升 / 热点艺人</h3>
+            <div class="desc">近期热度攀升，网络上有热门话题的艺人。适合借势营销、热点跟进、短期 campaign。</div>
+            <div class="resource-examples">
+              <span class="example-tag">热度攀升</span>
+              <span class="example-tag">借势营销</span>
+              <span class="example-tag">热点跟进</span>
+              <span class="example-tag">短期合作</span>
+            </div>
+          </div>
+
+          <div class="resource-card rc-shortdrama sc-reveal">
+            <div class="resource-icon">🎬</div>
+            <h3>短剧明星</h3>
+            <div class="desc">出演短剧的男女演员，社媒平台粉丝量不低于 50w。适合下沉市场品牌、性价比合作、内容植入。</div>
+            <div class="resource-examples">
+              <span class="example-tag">短剧赛道</span>
+              <span class="example-tag">50w+ 粉丝</span>
+              <span class="example-tag">下沉市场</span>
+              <span class="example-tag">高性价比</span>
+            </div>
+          </div>
+
+          <div class="resource-card rc-intl sc-reveal">
+            <div class="resource-icon">🌍</div>
+            <h3>国外艺人</h3>
+            <div class="desc">在国外出道，但在内地有较多粉丝，且可以参与国内商业化活动的艺人。适合国际品牌、跨文化营销。</div>
+            <div class="resource-examples">
+              <span class="example-tag">海外出道</span>
+              <span class="example-tag">内地粉丝</span>
+              <span class="example-tag">跨文化</span>
+              <span class="example-tag">国际品牌</span>
+            </div>
+          </div>
+
+          <div class="resource-card rc-ecom sc-reveal">
+            <div class="resource-icon">🛒</div>
+            <h3>电商明星</h3>
+            <div class="desc">在各大平台开直播带货的明星，如张雨绮、刘涛等。适合电商合作、直播带货、品牌专场。转化率高、GMV 可观。</div>
+            <div class="resource-examples">
+              <span class="example-tag">直播带货</span>
+              <span class="example-tag">高转化</span>
+              <span class="example-tag">品牌专场</span>
+              <span class="example-tag">GMV 驱动</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="sc-w">
+      <div class="footer-links">
+        <a href="/36">养虾36计</a>
+        <a href="/24">虾24章经</a>
+        <a href="/blog">思享录</a>
+        <a href="/game">ShrimpFi</a>
+        <a href="/crypto">Crypto Alpha</a>
+        <a href="/stars">明星追踪</a>
+        <a href="/skills-wiki.html">Skills Wiki</a>
+        <a href="/opc-onboarding.html">OPC 入门</a>
+      </div>
+      <p>© 2026 <a href="/">SingClaw</a> · 明星追踪 · 数据来源：微博 / 小红书 / 公众号</p>
+      <p style="margin-top:6px;font-size:11px">@SingClaw</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── Tab Switching ──
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected','true');
+        const panel = document.getElementById(btn.dataset.tab);
+        panel.classList.add('active');
+        // Re-observe reveal elements in newly visible panel
+        panel.querySelectorAll('.sc-reveal:not(.visible)').forEach(el => observer.observe(el));
+      });
+    });
+
+    // ── Scroll Reveal ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.sc-reveal').forEach(el => observer.observe(el));
+
+    // ── Bot Interaction ──
+    const botState = { step: 0, answers: {} };
+    const botQuestions = [
+      { key:'brand', q:'你的品牌是什么类型的？' },
+      { key:'need', q:'你需要的明星合作类型是什么？' },
+      { key:'budget', q:'你的预算范围是？' },
+    ];
+    const botOptions = {
+      brand: ['美妆/护肤','服饰/时尚','食品饮料','3C数码','运动健康','其他'],
+      need: ['品牌代言','活动出席','直播带货','内容合作','短视频推广','全案合作'],
+      budget: ['10万以内','10-50万','50-100万','100-500万','500万以上'],
+    };
+    const botRecommendations = {
+      '美妆/护肤': '推荐流量明星或带货明星，如杨幂、张雨绮，粉丝购买力强，美妆转化率高。',
+      '服饰/时尚': '推荐品质艺人或流量明星，周杰伦、王一博等，时尚感强、带货力出众。',
+      '食品饮料': '推荐品质艺人或体育明星，汪苏泷、孙颖莎等，国民度高、受众面广。',
+      '3C数码': '推荐品质艺人或体育明星，周杰伦、王楚钦等，科技感和信任感兼备。',
+      '运动健康': '强烈推荐体育明星，孙颖莎、王楚钦等奥运冠军，形象正面、粉丝信赖。',
+      '其他': '建议先明确品牌定位，可联系我们的商务团队获取定制化推荐方案。',
+    };
+
+    function botNext(answer) {
+      const chat = document.getElementById('botChat');
+      const currentKey = botQuestions[botState.step]?.key;
+      if (currentKey) botState.answers[currentKey] = answer;
+
+      // Show user answer
+      chat.querySelector('.quick-options')?.remove();
+      const userMsg = document.createElement('div');
+      userMsg.className = 'bot-msg user';
+      userMsg.innerHTML = `<div class="bot-avatar usr">👤</div><div class="bot-bubble">${answer}</div>`;
+      chat.appendChild(userMsg);
+
+      botState.step++;
+
+      if (botState.step >= botQuestions.length) {
+        // Show recommendation
+        setTimeout(() => {
+          const brandAnswer = botState.answers.brand || '其他';
+          const needAnswer = botState.answers.need || '品牌代言';
+          const budgetAnswer = botState.answers.budget || '未指定';
+          const rec = botRecommendations[brandAnswer] || botRecommendations['其他'];
+          const reply = document.createElement('div');
+          reply.className = 'bot-msg';
+          reply.innerHTML = `
+            <div class="bot-avatar claw">🐾</div>
+            <div class="bot-bubble">
+              根据你的需求：<br/>
+              📌 品牌类型：<strong>${brandAnswer}</strong><br/>
+              📌 合作类型：<strong>${needAnswer}</strong><br/>
+              📌 预算范围：<strong>${budgetAnswer}</strong><br/><br/>
+              💡 <strong>推荐方案：</strong><br/>${rec}<br/><br/>
+              如需进一步匹配艺人，请联系商务团队获取详细报价和档期信息 📩
+            </div>`;
+          chat.appendChild(reply);
+        }, 400);
+      } else {
+        // Next question
+        setTimeout(() => {
+          const next = botQuestions[botState.step];
+          const reply = document.createElement('div');
+          reply.className = 'bot-msg';
+          reply.innerHTML = `
+            <div class="bot-avatar claw">🐾</div>
+            <div class="bot-bubble">${next.q}</div>`;
+          chat.appendChild(reply);
+
+          const opts = document.createElement('div');
+          opts.className = 'quick-options';
+          opts.innerHTML = botOptions[next.key].map(o =>
+            `<button class="quick-opt" onclick="botNext('${o}')">${o}</button>`
+          ).join('');
+          chat.appendChild(opts);
+        }, 400);
+      }
+
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+  <script src="/js/social-share.js"></script>
+</body>
+</html>
