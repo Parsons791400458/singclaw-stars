@@ -3,12 +3,12 @@
   "cleanUrls": false,
   "trailingSlash": false,
   "builds": [
-    { "src": "public/**", "use": "@vercel/static" }
+    { "src": "**/*", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/match", "dest": "/match/index.html" },
+    { "src": "/match/?", "dest": "/match/index.html" },
     { "src": "/match/(.*)", "dest": "/match/$1" },
-    { "src": "/business-summary", "dest": "/business-summary/index.html" },
+    { "src": "/business-summary/?", "dest": "/business-summary/index.html" },
     { "src": "/business-summary/(.*)", "dest": "/business-summary/$1" },
     { "src": "/(.*)", "dest": "/$1" }
   ],
