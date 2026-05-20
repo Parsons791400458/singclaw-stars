@@ -3,49 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StarClaw · 品牌找明星，先看商务情报</title>
-  <meta name="description" content="StarClaw：明星商务情报、品牌代言初筛、风险尽调与提案报告工作台。" />
+  <title>StarClaw Intelligence Console</title>
+  <meta name="description" content="StarClaw 明星商务情报数据库与 BI 智能工作台。" />
   <link rel="canonical" href="https://star.singclaw.xyz/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <style>
-    :root{--bg:#070814;--panel:#111429;--panel2:#171b34;--text:#f8fafc;--muted:#a7b0c0;--line:rgba(255,255,255,.12);--p:#8b5cf6;--pk:#ec4899;--cy:#38bdf8;--g:#22c55e;--a:#f59e0b}*{box-sizing:border-box}body{margin:0;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:radial-gradient(circle at 12% -8%,rgba(139,92,246,.32),transparent 32%),radial-gradient(circle at 88% 0,rgba(236,72,153,.18),transparent 24%),linear-gradient(180deg,#070814,#0b1020 45%,#06070f)}.wrap{width:min(1180px,calc(100% - 32px));margin:auto}.nav{position:sticky;top:0;z-index:5;background:rgba(7,8,20,.72);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.navin{height:68px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:950;letter-spacing:.03em}.brand b{background:linear-gradient(135deg,#fff,#d8b4fe,#f9a8d4);-webkit-background-clip:text;color:transparent}.links{display:flex;gap:18px}.links a{color:#d3d8e3;text-decoration:none;font-size:14px}.hero{padding:78px 0 42px;display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:center}.eyebrow{display:inline-flex;gap:8px;border:1px solid rgba(236,72,153,.35);background:rgba(236,72,153,.10);color:#fbcfe8;padding:8px 12px;border-radius:999px;font-size:13px}.hero h1{font-size:clamp(42px,6vw,78px);line-height:1.02;margin:16px 0;font-weight:950}.grad{background:linear-gradient(135deg,#fff,#c4b5fd,#f9a8d4);-webkit-background-clip:text;color:transparent}.hero p{font-size:18px;color:#cbd5e1;margin:0 0 24px;max-width:760px}.actions{display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 18px;border-radius:14px;text-decoration:none;color:white;font-weight:800;border:1px solid var(--line);background:rgba(255,255,255,.06)}.btn.primary{border:0;background:linear-gradient(135deg,var(--p),var(--pk));box-shadow:0 18px 45px rgba(236,72,153,.26)}.panel,.card{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,.28)}.panel{padding:22px}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.kpi{padding:14px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid var(--line)}.kpi b{display:block;font-size:26px}.kpi span{font-size:13px;color:var(--muted)}.section{padding:30px 0}.head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:16px}.head h2{margin:0;font-size:30px}.muted{color:var(--muted)}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{padding:20px}.tag{display:inline-block;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;color:#dbeafe;margin:2px 4px 0 0}.tag.green{background:rgba(34,197,94,.12);color:#bbf7d0}.tag.pink{background:rgba(236,72,153,.12);color:#fbcfe8}.signal h3,.artist h3{margin:10px 0 8px}.artistwall{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.artist{padding:18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.045)}.avatar{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--p),var(--pk));font-weight:950;font-size:22px;margin-bottom:12px}.score{font-size:28px;font-weight:950}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.step{padding:18px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04)}.step b{color:#e9d5ff}.report{white-space:pre-wrap;background:#080c18;border:1px solid var(--line);border-radius:18px;padding:18px;min-height:190px;color:#e5e7eb}.footer{padding:42px 0;color:var(--muted);text-align:center}.small{font-size:13px}.pillline{margin-top:10px}@media(max-width:980px){.hero,.grid2{grid-template-columns:1fr}.grid3,.artistwall,.flow{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.links{display:none}.grid3,.artistwall,.flow,.kpis{grid-template-columns:1fr}.hero{padding-top:42px}}
+    :root{--bg:#07111f;--bg2:#0b1728;--panel:#0f1b31;--panel2:#12233f;--card:#132746;--line:rgba(255,255,255,.08);--text:#f7fafc;--muted:#94a3b8;--blue:#60a5fa;--cyan:#22d3ee;--violet:#8b5cf6;--pink:#ec4899;--green:#22c55e;--amber:#f59e0b;--red:#ef4444}*{box-sizing:border-box}html,body{margin:0;background:radial-gradient(circle at top left,rgba(96,165,250,.16),transparent 26%),radial-gradient(circle at top right,rgba(139,92,246,.14),transparent 24%),linear-gradient(180deg,#07111f,#091422 45%,#060d18);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif}body{display:grid;grid-template-columns:270px 1fr;min-height:100vh}.sidebar{background:rgba(8,15,27,.9);border-right:1px solid var(--line);padding:22px 18px;display:flex;flex-direction:column;gap:20px}.brand{display:flex;gap:12px;align-items:center}.mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--violet));display:grid;place-items:center;font-weight:900}.brand h1{font-size:18px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.nav{display:grid;gap:8px}.nav a{color:#d8e3f4;text-decoration:none;padding:11px 12px;border-radius:12px;font-weight:700}.nav a:hover,.nav a.active{background:rgba(255,255,255,.08)}.sidecard{margin-top:auto;padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);display:grid;gap:8px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}.main{min-width:0}.topbar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:18px 26px;border-bottom:1px solid var(--line);background:rgba(7,17,31,.76);backdrop-filter:blur(18px)}.search{display:flex;gap:10px;align-items:center;width:min(660px,100%)}.search input,.search select{background:#0d1a2f;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 14px;font:inherit}.search input{flex:1}.actions{display:flex;gap:10px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:12px 14px;text-decoration:none;color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--line);font-weight:800}.btn.primary{background:linear-gradient(135deg,var(--blue),var(--violet));border:0}.content{padding:24px 26px 40px;display:grid;gap:18px}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.panel{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.035));border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.24)}.hero h2{margin:6px 0 10px;font-size:42px;line-height:1.04}.hero p{margin:0;color:#c8d4e3;max-width:760px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.kpi{padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}.kpi b{display:block;font-size:30px;margin-top:8px}.mini{font-size:12px;color:var(--muted)}.statdeck{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.chip{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(255,255,255,.08);color:#dbeafe}.chip.blue{background:rgba(96,165,250,.14);color:#bfdbfe}.chip.green{background:rgba(34,197,94,.14);color:#bbf7d0}.chip.amber{background:rgba(245,158,11,.16);color:#fde68a}.chip.pink{background:rgba(236,72,153,.14);color:#fbcfe8}.grid{display:grid;gap:18px}.split{grid-template-columns:1.2fr .8fr}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-head h3{margin:0;font-size:22px}.section-head p{margin:4px 0 0;color:var(--muted)}.feed{display:grid;gap:12px}.feed-item{padding:14px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.feed-item h4{margin:8px 0 8px;font-size:17px}.feed-item p{margin:0 0 10px;color:#d4deea}.watchlist{display:grid;gap:10px}.watch{padding:13px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}.watch strong{display:block}.database{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:13px 10px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;vertical-align:top}.table th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.table tr{cursor:pointer}.table tr:hover{background:rgba(255,255,255,.03)}.score{font-size:28px;font-weight:900}.risk-low{color:#86efac}.risk-mid{color:#fcd34d}.risk-high{color:#fca5a5}.detail{display:grid;gap:14px}.bars{display:grid;gap:10px}.barrow{display:grid;grid-template-columns:140px 1fr 46px;gap:10px;align-items:center}.bar{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet))}.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.cards2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{padding:16px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.card h4{margin:0 0 10px}.card p{margin:0;color:#d3deea}.report{white-space:pre-wrap;background:#081221;border:1px solid var(--line);border-radius:18px;padding:16px;min-height:220px;color:#e8eef7}.footer{padding:8px 4px 0;color:var(--muted);font-size:12px}.empty{padding:28px;text-align:center;color:var(--muted)}@media(max-width:1100px){body{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--line)}.hero,.split,.cards2,.cards3,.kpis,.statdeck{grid-template-columns:1fr}.topbar{position:static;flex-direction:column;align-items:stretch}.actions{justify-content:flex-start}}
   </style>
 </head>
 <body>
-  <nav class="nav"><div class="wrap navin"><div class="brand"><b>StarClaw</b> 明星追踪</div><div class="links"><a href="/stars">明星情报</a><a href="/match">匹配助手</a><a href="/business-summary">报告样例</a></div></div></nav>
-  <main class="wrap">
-    <section class="hero">
-      <div>
-        <span class="eyebrow">⭐ 面向品牌市场部 / 公关代理商 / 商务团队</span>
-        <h1>品牌找明星，先看 <span class="grad">商务情报</span></h1>
-        <p>StarClaw 不是“明星资料页”，而是一个帮你完成代言人初筛、解释推荐逻辑、规避风险、快速生成提案的明星商务情报工作台。</p>
-        <div class="actions"><a class="btn primary" href="/match">开始匹配明星</a><a class="btn" href="/stars">查看今日情报</a><a class="btn" href="/business-summary">查看报告样例</a></div>
+  <aside class="sidebar">
+    <div class="brand"><div class="mark">SC</div><div><h1>StarClaw</h1><p>Intelligence Database + BI Console</p></div></div>
+    <nav class="nav">
+      <a class="active" href="#overview">Overview</a>
+      <a href="#signals">Signal Feed</a>
+      <a href="#database">Artist Database</a>
+      <a href="#bi">BI Console</a>
+      <a href="/match">Matching Workbench</a>
+      <a href="/business-summary">Report Output</a>
+    </nav>
+    <div class="sidecard">
+      <span class="eyebrow">Platform mode</span>
+      <strong>品牌明星数据库 + BI 智能分析台</strong>
+      <span class="mini">不再只是看页面，而是像在用一套明星商务情报系统。</span>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <input id="searchInput" placeholder="搜索艺人 / 品类 / 商务标签 / 风险提示" />
+        <select id="categoryFilter"></select>
+        <select id="riskFilter"><option value="all">全部风险等级</option><option value="safe">低风险优先</option><option value="balanced">平衡型</option><option value="aggressive">高热度优先</option></select>
       </div>
-      <aside class="panel">
-        <h3 style="margin:0 0 8px">今日推荐摘要</h3>
-        <div id="topPick" class="report">加载中…</div>
-        <div class="kpis"><div class="kpi"><b id="mArtists">—</b><span>艺人样例</span></div><div class="kpi"><b id="mSignals">—</b><span>情报信号</span></div><div class="kpi"><b id="mFlow">v?</b><span>数据流版本</span></div></div>
-      </aside>
-    </section>
+      <div class="actions"><a class="btn" href="/stars">情报频道</a><a class="btn primary" href="/match">开始建 shortlist</a></div>
+    </header>
+    <div class="content">
+      <section class="hero" id="overview">
+        <div class="panel">
+          <span class="eyebrow">starclaw intelligence console</span>
+          <h2>像数据库一样找明星，像 BI 平台一样做判断</h2>
+          <p>把明星商务情报、品类适配、风险提示、合作履历和候选池比较放到一个统一界面里。品牌团队不用在资料页、聊天记录和 Excel 之间来回切换。</p>
+          <div class="kpis">
+            <div class="kpi"><span class="mini">艺人样本</span><b id="metricArtists">—</b></div>
+            <div class="kpi"><span class="mini">情报信号</span><b id="metricSignals">—</b></div>
+            <div class="kpi"><span class="mini">低风险候选</span><b id="metricSafe">—</b></div>
+            <div class="kpi"><span class="mini">当前数据流</span><b id="metricFlow">—</b></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="section-head"><div><h3>Decision Snapshot</h3><p>给品牌负责人看的“今天先看什么”。</p></div><span id="modeChip" class="chip blue">Live JSON</span></div>
+          <div class="statdeck">
+            <div class="card"><span class="eyebrow">Top pick</span><h4 id="topPickName">—</h4><p id="topPickReason">—</p></div>
+            <div class="card"><span class="eyebrow">Main risk</span><h4 id="topRisk">—</h4><p id="topRiskAdvice">—</p></div>
+            <div class="card"><span class="eyebrow">Best category signal</span><h4 id="bestCategory">—</h4><p id="bestCategoryNote">—</p></div>
+            <div class="card"><span class="eyebrow">Recommended workflow</span><h4>Filter → Compare → Report</h4><p>先缩小候选池，再看证据与风险，再输出提案。</p></div>
+          </div>
+        </div>
+      </section>
 
-    <section class="section">
-      <div class="head"><div><h2>今日商务情报</h2><div class="muted small">先看发生了什么，再决定选谁。</div></div><a class="btn" href="/stars">进入明星情报频道</a></div>
-      <div id="signalsGrid" class="grid3"></div>
-    </section>
+      <section class="grid split" id="signals">
+        <div class="panel">
+          <div class="section-head"><div><h3>Signal Feed</h3><p>像情报流一样先看市场发生了什么。</p></div><a class="btn" href="/stars">打开完整情报频道</a></div>
+          <div id="signalFeed" class="feed"></div>
+        </div>
+        <div class="panel">
+          <div class="section-head"><div><h3>Watchlist</h3><p>最值得品牌团队盯住的候选人与机会。</p></div></div>
+          <div id="watchlist" class="watchlist"></div>
+        </div>
+      </section>
 
-    <section class="section">
-      <div class="head"><div><h2>热门艺人雷达</h2><div class="muted small">高适配、高商业价值、可解释推荐。</div></div></div>
-      <div id="artistGrid" class="artistwall"></div>
-    </section>
+      <section class="panel" id="database">
+        <div class="section-head"><div><h3>Artist Database</h3><p>不是明星海报墙，而是可筛选、可比较、可选池的商务数据库。</p></div><span class="chip pink">queryable view</span></div>
+        <div class="database">
+          <table class="table">
+            <thead><tr><th>艺人</th><th>品类标签</th><th>StarClaw Score</th><th>商业价值</th><th>热度</th><th>风险</th><th>最佳用途</th></tr></thead>
+            <tbody id="artistRows"></tbody>
+          </table>
+        </div>
+      </section>
 
-    <section class="section grid2">
-      <div class="card"><h2>品牌匹配流程</h2><div class="flow"><div class="step"><b>1. 输入 Brief</b><p class="muted small">品类、预算、目标人群、风险偏好。</p></div><div class="step"><b>2. 推荐候选</b><p class="muted small">按 StarClaw Score 输出 shortlist。</p></div><div class="step"><b>3. 对比风险</b><p class="muted small">看商业价值、适配度、舆情与履历。</p></div><div class="step"><b>4. 生成报告</b><p class="muted small">形成可给老板/客户看的提案草稿。</p></div></div><div class="pillline"><span class="tag pink">适合品牌市场负责人</span><span class="tag">适合代理商提案</span><span class="tag green">可继续接 Neon/API</span></div></div>
-      <div class="card"><h2>报告预览</h2><div id="reportPreview" class="report">加载中…</div><div class="actions" style="margin-top:12px"><a class="btn primary" href="/business-summary">打开完整报告页</a><a class="btn" href="/match">试用匹配助手</a></div></div>
-    </section>
+      <section class="grid split" id="bi">
+        <div class="panel">
+          <div class="section-head"><div><h3>BI Detail Panel</h3><p>选中一个艺人，看结构化分项，不只看一句“推荐”。</p></div></div>
+          <div id="detailPanel" class="detail"></div>
+        </div>
+        <div class="panel">
+          <div class="section-head"><div><h3>Campaign Output</h3><p>自动生成品牌讨论用摘要，像智能平台的右侧工作区。</p></div><button id="copyReportBtn" class="btn">复制摘要</button></div>
+          <div id="reportBox" class="report"></div>
+          <div class="footer">下一步可继续接真实艺人库 / 风险证据 / 报价与档期 API。</div>
+        </div>
+      </section>
+
+      <section class="cards2">
+        <div class="panel"><div class="section-head"><div><h3>候选池比较</h3><p>默认比较 Top 3，也可以从数据库选池。</p></div></div><div id="compareCards" class="cards3"></div></div>
+        <div class="panel"><div class="section-head"><div><h3>Data Flow / Trust</h3><p>把数据源、逻辑层、输出层说明清楚，像 BI 平台看 lineage。</p></div></div><div id="pipelineCards" class="cards3"></div></div>
+      </section>
+    </div>
   </main>
-  <div class="footer">StarClaw · 明星商务情报 / 代言人初筛 / 风险尽调 · Updated 2026-05-20 15:00 GMT+8</div>
-  <script>
-    fetch('/data.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{const arts=d.artists||[];const sig=d.businessSignals||[];const w=d.scoringWeights||{commercialValue:.3,categoryFit:.25,riskControl:.2,heatTrend:.15,partnershipHistory:.1};const score=a=>Math.round((a.commercialValue||0)*w.commercialValue+(a.categoryFit||0)*w.categoryFit+(100-(a.riskLevel||0))*w.riskControl+(a.heatTrend||0)*w.heatTrend+(a.partnershipHistory||0)*w.partnershipHistory);const ranked=arts.map(a=>({...a,s:score(a)})).sort((a,b)=>b.s-a.s);document.getElementById('mArtists').textContent=arts.length;document.getElementById('mSignals').textContent=sig.length;document.getElementById('mFlow').textContent=d.dataFlowVersion||'v?';const pick=ranked[0];document.getElementById('topPick').textContent=pick?`当前推荐：${pick.name}\n角色：${pick.role}\nStarClaw Score：${pick.s}\n推荐理由：${(pick.evidence||[]).join('；')}\n风险提示：${(pick.riskTags||[]).join('；')}`:'暂无数据';document.getElementById('reportPreview').textContent=pick?`品牌需求：美妆新品首发 / 预算 100-500 万 / 目标年轻女性\n\n推荐艺人：${pick.name}\n分数：${pick.s}\n\n推荐依据：\n- ${(pick.evidence||[]).join('\n- ')}\n\n风险提示：\n- ${(pick.riskTags||[]).join('\n- ')}\n\n下一步：确认档期、报价、竞品排他、舆情预案。`:'';document.getElementById('signalsGrid').innerHTML=sig.map(s=>`<article class="card signal"><span class="tag pink">${s.type}</span><h3>${s.title}</h3><p class="muted">${s.summary}</p><div><span class="tag green">${s.date}</span><span class="tag">${s.metric}</span></div></article>`).join('');document.getElementById('artistGrid').innerHTML=ranked.slice(0,5).map(a=>`<article class="artist"><div class="avatar">${a.name[0]}</div><h3>${a.name}</h3><div class="muted small">${a.role}</div><div class="score">${a.s}</div><div>${a.category.slice(0,3).map(c=>`<span class="tag">${c}</span>`).join('')}</div><p class="muted small">${a.bestUse||a.recentSignal||''}</p></article>`).join('')});
-  </script>
+  <script src="/app.js"></script>
 </body>
 </html>

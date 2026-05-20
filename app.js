@@ -1,188 +1,210 @@
-const DATA_PATHS = ['/data.json', '/stars/data.json'];
-
-const fallback = {
-  updatedAt: 'fallback',
-  dataFlowVersion: 'fallback',
-  status: 'data_load_failed',
-  sourceNote: '数据加载失败，当前展示空状态。',
-  scoringWeights: { commercialValue: 0.3, categoryFit: 0.25, riskControl: 0.2, heatTrend: 0.15, partnershipHistory: 0.1 },
-  businessSignals: [],
-  pipeline: [],
-  artists: []
-};
-
-let state = {
-  data: fallback,
+const state = {
+  data: null,
   artists: [],
-  selected: null,
-  shortlist: new Set(),
-  dataPath: 'fallback'
+  filtered: [],
+  selectedId: null
 };
 
 const $ = (id) => document.getElementById(id);
-const pct = (n) => `${Math.round((n || 0) * 100)}%`;
-const esc = (v) => String(v ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-function weights() {
-  return state.data.scoringWeights || fallback.scoringWeights;
-}
+const esc = (v) => String(v ?? '').replace(/[&<>\"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const riskClass = (n) => n < 20 ? 'risk-low' : n < 28 ? 'risk-mid' : 'risk-high';
+const fmtPct = (n) => `${Math.round(n || 0)}%`;
 
 function scoreArtist(artist) {
-  const w = weights();
+  const w = state.data.scoringWeights || { commercialValue: .3, categoryFit: .25, riskControl: .2, heatTrend: .15, partnershipHistory: .1 };
   return Math.round(
-    (artist.commercialValue || 0) * (w.commercialValue || 0) +
-    (artist.categoryFit || 0) * (w.categoryFit || 0) +
-    (100 - (artist.riskLevel || 0)) * (w.riskControl || 0) +
-    (artist.heatTrend || 0) * (w.heatTrend || 0) +
-    (artist.partnershipHistory || 0) * (w.partnershipHistory || 0)
+    (artist.commercialValue || 0) * w.commercialValue +
+    (artist.categoryFit || 0) * w.categoryFit +
+    (100 - (artist.riskLevel || 0)) * w.riskControl +
+    (artist.heatTrend || 0) * w.heatTrend +
+    (artist.partnershipHistory || 0) * w.partnershipHistory
   );
 }
 
-function rankedArtists() {
-  const category = $('category').value;
-  const risk = $('risk').value;
-  return state.artists
-    .filter((artist) => risk === 'all' || (risk === 'low' ? artist.riskLevel < 25 : artist.riskLevel >= 25))
-    .map((artist) => ({ ...artist, finalScore: scoreArtist(artist) + (artist.category.includes(category) ? 6 : 0) }))
+function categories() {
+  const set = new Set(['全部品类']);
+  state.artists.forEach((a) => (a.category || []).forEach((c) => set.add(c)));
+  return [...set];
+}
+
+function applyFilters() {
+  const keyword = $('searchInput').value.trim().toLowerCase();
+  const category = $('categoryFilter').value;
+  const riskMode = $('riskFilter').value;
+
+  state.filtered = state.artists
+    .map((artist) => ({ ...artist, finalScore: scoreArtist(artist) }))
+    .filter((artist) => {
+      const hay = [artist.name, artist.role, artist.bestUse, artist.recentSignal, ...(artist.category || []), ...(artist.riskTags || []), ...(artist.evidence || [])].join(' ').toLowerCase();
+      if (keyword && !hay.includes(keyword)) return false;
+      if (category !== '全部品类' && !(artist.category || []).includes(category)) return false;
+      if (riskMode === 'safe' && artist.riskLevel >= 22) return false;
+      if (riskMode === 'balanced' && (artist.riskLevel < 18 || artist.riskLevel > 28)) return false;
+      if (riskMode === 'aggressive' && artist.heatTrend < 85) return false;
+      return true;
+    })
     .sort((a, b) => b.finalScore - a.finalScore);
+
+  if (!state.filtered.find((a) => a.id === state.selectedId)) state.selectedId = state.filtered[0]?.id || null;
+  render();
+}
+
+function selectedArtist() {
+  return state.filtered.find((a) => a.id === state.selectedId) || state.filtered[0] || null;
+}
+
+function renderHeaderMetrics() {
+  $('metricArtists').textContent = state.filtered.length;
+  $('metricSignals').textContent = (state.data.businessSignals || []).length;
+  $('metricSafe').textContent = state.filtered.filter((a) => a.riskLevel < 22).length;
+  $('metricFlow').textContent = state.data.dataFlowVersion || 'v?';
+  $('modeChip').textContent = state.data.status || 'json';
+}
+
+function renderSnapshot() {
+  const top = selectedArtist();
+  const topSignal = (state.data.businessSignals || [])[0];
+  $('topPickName').textContent = top ? `${top.name} · ${top.finalScore}` : '暂无候选';
+  $('topPickReason').textContent = top ? (top.evidence || []).slice(0, 2).join('；') : '暂无数据';
+  $('topRisk').textContent = top ? (top.riskTags?.[0] || '低风险') : '—';
+  $('topRiskAdvice').textContent = top ? `建议先确认 ${top.riskTags?.join('、') || '档期与竞品排他'}。` : '—';
+  $('bestCategory').textContent = topSignal?.title || '—';
+  $('bestCategoryNote').textContent = topSignal?.summary || '—';
 }
 
 function renderSignals() {
   const signals = state.data.businessSignals || [];
-  $('signalsGrid').innerHTML = signals.map((signal) => `
-    <article class="signal">
-      <span class="pill blue">${esc(signal.type)}</span>
-      <h3>${esc(signal.title)}</h3>
-      <p>${esc(signal.summary)}</p>
-      <span class="pill green">${esc(signal.date)}</span><span class="pill">${esc(signal.metric)}</span>
+  $('signalFeed').innerHTML = signals.map((s) => `
+    <article class="feed-item">
+      <span class="chip pink">${esc(s.type)}</span>
+      <h4>${esc(s.title)}</h4>
+      <p>${esc(s.summary)}</p>
+      <span class="chip green">${esc(s.date)}</span>
+      <span class="chip">${esc(s.metric)}</span>
     </article>
-  `).join('') || '<div class="card">暂无情报信号</div>';
+  `).join('') || '<div class="empty">暂无情报信号</div>';
+}
+
+function renderWatchlist() {
+  $('watchlist').innerHTML = state.filtered.slice(0, 4).map((artist, i) => `
+    <div class="watch">
+      <div>
+        <strong>${i + 1}. ${esc(artist.name)}</strong>
+        <div class="mini">${esc(artist.role)} · ${esc(artist.bestUse || '')}</div>
+      </div>
+      <div class="score">${artist.finalScore}</div>
+    </div>
+  `).join('') || '<div class="empty">没有匹配结果</div>';
+}
+
+function renderTable() {
+  $('artistRows').innerHTML = state.filtered.map((artist) => `
+    <tr data-id="${esc(artist.id)}">
+      <td><strong>${esc(artist.name)}</strong><br><span class="mini">${esc(artist.role)}</span></td>
+      <td>${(artist.category || []).map((c) => `<span class="chip">${esc(c)}</span>`).join('')}</td>
+      <td><span class="score">${artist.finalScore}</span></td>
+      <td>${artist.commercialValue}</td>
+      <td>${artist.heatTrend}</td>
+      <td class="${riskClass(artist.riskLevel)}">${artist.riskLevel} / ${(artist.riskTags || []).join('；')}</td>
+      <td>${esc(artist.bestUse || artist.recentSignal || '')}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="7" class="empty">没有符合筛选条件的艺人</td></tr>';
+
+  document.querySelectorAll('#artistRows tr[data-id]').forEach((row) => {
+    row.addEventListener('click', () => {
+      state.selectedId = row.dataset.id;
+      renderDetail();
+      renderSnapshot();
+      renderCompare();
+      window.location.hash = '#bi';
+    });
+  });
+}
+
+function renderDetail() {
+  const artist = selectedArtist();
+  if (!artist) {
+    $('detailPanel').innerHTML = '<div class="empty">请选择艺人查看 BI 分析。</div>';
+    $('reportBox').textContent = '暂无报告';
+    return;
+  }
+
+  $('detailPanel').innerHTML = `
+    <div>
+      <span class="chip blue">Selected Artist</span>
+      <h3 style="margin:10px 0 6px">${esc(artist.name)} · ${esc(artist.role)}</h3>
+      <div class="mini">${esc(artist.audience || '')}</div>
+    </div>
+    <div class="bars">
+      ${[
+        ['商业价值', artist.commercialValue],
+        ['品类适配', artist.categoryFit],
+        ['热度趋势', artist.heatTrend],
+        ['合作履历', artist.partnershipHistory],
+        ['风险控制', 100 - artist.riskLevel]
+      ].map(([label, value]) => `
+        <div class="barrow"><span>${label}</span><div class="bar"><span style="width:${value}%"></span></div><b>${value}</b></div>
+      `).join('')}
+    </div>
+    <div class="cards2">
+      <div class="card"><h4>推荐依据</h4><p>${(artist.evidence || []).map(esc).join('；')}</p></div>
+      <div class="card"><h4>风险提示</h4><p>${(artist.riskTags || []).map(esc).join('；')}</p></div>
+    </div>
+    <div class="card"><h4>最近商务观察</h4><p>${esc(artist.recentSignal || '')}</p></div>
+  `;
+
+  $('reportBox').textContent = `StarClaw Insight Brief\n\n候选艺人：${artist.name}（${artist.role}）\nStarClaw Score：${artist.finalScore}\n适用品类：${(artist.category || []).join(' / ')}\n目标人群：${artist.audience || '—'}\n\n推荐依据：\n- ${(artist.evidence || []).join('\n- ')}\n\n风险提示：\n- ${(artist.riskTags || []).join('\n- ')}\n\n建议打法：\n${artist.bestUse || artist.recentSignal || ''}\n\n数据流：${state.data.dataFlowVersion} / ${state.data.status}\n下一步：加入 shortlist → 去 /match 做品牌匹配 → 去 /business-summary 导出报告。`;
+}
+
+function renderCompare() {
+  const picks = state.filtered.slice(0, 3);
+  $('compareCards').innerHTML = picks.map((artist) => `
+    <div class="card">
+      <span class="chip blue">${esc(artist.name)}</span>
+      <h4 style="margin-top:10px">Score ${artist.finalScore}</h4>
+      <p>${esc(artist.bestUse || '')}</p>
+      <div class="mini">风险：${(artist.riskTags || []).join('；')}</div>
+    </div>
+  `).join('') || '<div class="empty">暂无候选</div>';
 }
 
 function renderPipeline() {
-  const pipeline = state.data.pipeline || [];
-  $('pipelineGrid').innerHTML = pipeline.map((step) => `
-    <div class="step">
-      <b>${esc(step.name)}</b><br>
-      <span class="pill ${step.status === 'online' ? 'green' : 'blue'}">${esc(step.status)}</span>
+  $('pipelineCards').innerHTML = (state.data.pipeline || []).map((step) => `
+    <div class="card">
+      <span class="chip ${step.status === 'online' ? 'green' : 'amber'}">${esc(step.status)}</span>
+      <h4 style="margin-top:10px">${esc(step.name)}</h4>
       <p>${esc(step.description)}</p>
     </div>
   `).join('');
 }
 
-function renderArtists(ranked) {
-  $('artistGrid').innerHTML = ranked.map((artist) => `
-    <article class="artist ${artist.id === state.selected ? 'active' : ''}" data-id="${esc(artist.id)}">
-      <div class="avatar">${esc(artist.name[0])}</div>
-      <h3>${esc(artist.name)}</h3>
-      <p>${esc(artist.role)}</p>
-      <div class="score">${artist.finalScore}</div>
-      ${artist.category.slice(0, 3).map((c) => `<span class="pill">${esc(c)}</span>`).join('')}
-      <button class="mini" data-shortlist="${esc(artist.id)}">${state.shortlist.has(artist.id) ? '已入候选池' : '加入候选池'}</button>
-    </article>
-  `).join('');
-
-  document.querySelectorAll('.artist').forEach((el) => {
-    el.addEventListener('click', (event) => {
-      if (event.target?.dataset?.shortlist) return;
-      state.selected = el.dataset.id;
-      render();
-    });
-  });
-  document.querySelectorAll('[data-shortlist]').forEach((button) => {
-    button.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const id = button.dataset.shortlist;
-      if (state.shortlist.has(id)) state.shortlist.delete(id);
-      else if (state.shortlist.size < 3) state.shortlist.add(id);
-      else alert('Demo 候选池最多先放 3 位，便于品牌内部讨论。');
-      render();
-    });
-  });
-}
-
-function renderCompare(ranked) {
-  const compare = state.shortlist.size
-    ? ranked.filter((artist) => state.shortlist.has(artist.id))
-    : ranked.slice(0, 5);
-
-  $('compareRows').innerHTML = compare.map((artist) => `
-    <tr class="data-row">
-      <td><b>${esc(artist.name)}</b><br><span class="pill">${esc(artist.role)}</span></td>
-      <td><b>${artist.finalScore}</b></td>
-      <td>${artist.category.map(esc).join(' / ')}</td>
-      <td>${esc(artist.audience)}</td>
-      <td>${esc(artist.recentSignal)}</td>
-      <td class="risk ${artist.riskLevel < 25 ? 'low' : 'mid'}">${artist.riskTags.map(esc).join('；')}</td>
-    </tr>
-  `).join('');
-
-  $('shortlistNote').textContent = state.shortlist.size
-    ? `当前候选池：${compare.map((a) => a.name).join('、')}`
-    : '未手动加入候选池时，默认展示当前品类 Top 5。';
-}
-
-function reportFor(pick) {
-  if (!pick) return '';
-  return `StarClaw 品牌代言初筛报告（Demo）\n\n品牌需求：${$('category').value} / ${$('budget').value}\n风险偏好：${$('risk').selectedOptions[0].textContent}\n目标人群：${$('audience').value}\nCampaign 目标：${$('goal').value}\n\n推荐艺人：${pick.name}（${pick.role}）\nStarClaw Score：${pick.finalScore}\n\n推荐依据：\n- ${pick.evidence.join('\n- ')}\n\n风险尽调：\n- ${pick.riskTags.join('\n- ')}\n\n数据来源：${state.dataPath} / ${state.data.dataFlowVersion}\n下一步：确认档期、报价、竞品排他与近期舆情，再进入商务沟通。`;
-}
-
 function render() {
-  const ranked = rankedArtists();
-  state.selected = state.selected || ranked[0]?.id;
-  const pick = ranked.find((artist) => artist.id === state.selected) || ranked[0];
-  const w = weights();
-
-  $('mArtists').textContent = state.artists.length;
-  $('mSignals').textContent = (state.data.businessSignals || []).length;
-  $('mFlow').textContent = state.data.dataFlowVersion || 'v?';
-  $('weightText').textContent = `商业价值 ${pct(w.commercialValue)} · 品类匹配 ${pct(w.categoryFit)} · 风险控制 ${pct(w.riskControl)} · 热度趋势 ${pct(w.heatTrend)} · 合作履历 ${pct(w.partnershipHistory)}。权重来自 data.json。`;
-  $('dataPathText').textContent = state.dataPath;
-
+  renderHeaderMetrics();
+  renderSnapshot();
   renderSignals();
+  renderWatchlist();
+  renderTable();
+  renderDetail();
+  renderCompare();
   renderPipeline();
-  renderArtists(ranked);
-  renderCompare(ranked);
-
-  $('topPick').textContent = pick
-    ? `当前首选：${pick.name}\n推荐分：${pick.finalScore}\n推荐理由：${pick.evidence.join('；')}\n风险提示：${pick.riskTags.join('；')}`
-    : '暂无数据';
-  $('reportText').textContent = reportFor(pick);
-  $('dataFlowText').textContent = `当前数据流：${state.dataPath} → app.js → 页面组件\nSchema：${state.data.schemaVersion}\n状态：${state.data.status}\n更新时间：${state.data.updatedAt}\n说明：${state.data.sourceNote}`;
 }
 
-async function loadData() {
-  for (const path of DATA_PATHS) {
-    try {
-      const res = await fetch(path, { cache: 'no-store' });
-      if (!res.ok) continue;
-      const data = await res.json();
-      state.data = data;
-      state.artists = data.artists || [];
-      state.dataPath = path;
-      state.selected = null;
-      render();
-      return;
-    } catch (err) {
-      // Try next data path.
-    }
-  }
-  state.data = fallback;
-  state.artists = [];
-  state.dataPath = 'fallback';
-  render();
-}
-
-['category', 'budget', 'risk', 'audience', 'goal'].forEach((id) => {
-  $(id).addEventListener('input', () => {
-    state.selected = null;
-    render();
+async function init() {
+  const res = await fetch('/data.json', { cache: 'no-store' });
+  state.data = await res.json();
+  state.artists = state.data.artists || [];
+  $('categoryFilter').innerHTML = categories().map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  $('searchInput').addEventListener('input', applyFilters);
+  $('categoryFilter').addEventListener('change', applyFilters);
+  $('riskFilter').addEventListener('change', applyFilters);
+  $('copyReportBtn').addEventListener('click', async () => {
+    await navigator.clipboard.writeText($('reportBox').textContent);
+    $('copyReportBtn').textContent = '已复制';
+    setTimeout(() => $('copyReportBtn').textContent = '复制摘要', 1500);
   });
-});
+  applyFilters();
+}
 
-$('copyBtn').addEventListener('click', async () => {
-  await navigator.clipboard.writeText($('reportText').textContent);
-  $('copyBtn').textContent = '已复制';
+init().catch((err) => {
+  document.querySelector('.content').innerHTML = `<div class="panel empty">数据加载失败：${esc(err.message)}</div>`;
 });
-
-loadData();
