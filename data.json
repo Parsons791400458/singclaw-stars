@@ -1,12 +1,38 @@
 {
-  "updatedAt": "2026-05-20T10:08:00+08:00",
+  "updatedAt": "2026-05-20T11:05:00+08:00",
+  "dataFlowVersion": "starclaw-static-json-v1",
+  "status": "demo_fixed_json_flow",
+  "sourceNote": "当前版本使用静态 data.json 作为固定数据源；下一阶段可替换为 Neon/Postgres API，但页面渲染、评分、对比、报告均从同一数据对象读取。",
   "scoringWeights": {
     "commercialValue": 0.3,
     "categoryFit": 0.25,
-    "riskLevel": 0.2,
+    "riskControl": 0.2,
     "heatTrend": 0.15,
     "partnershipHistory": 0.1
   },
+  "businessSignals": [
+    {
+      "type": "官宣代言",
+      "title": "美妆新品声量窗口打开",
+      "summary": "近期美妆新品更依赖“官宣 + 短视频种草 + 直播转化”三段式打法，首选高互动女性受众艺人。",
+      "date": "2026-05-20",
+      "metric": "A+ 声量机会"
+    },
+    {
+      "type": "风险提醒",
+      "title": "粉圈舆情需要前置预案",
+      "summary": "高流量艺人可带来爆发曝光，但品牌需提前准备竞品排他、评论区治理和舆情响应口径。",
+      "date": "2026-05-20",
+      "metric": "中风险 / 可控"
+    },
+    {
+      "type": "品类机会",
+      "title": "运动、汽车、3C 更偏好专业标签",
+      "summary": "技术型与高客单价品牌更适合选择有运动、专业、长期商业履历的候选人。",
+      "date": "2026-05-20",
+      "metric": "高客单适配"
+    }
+  ],
   "artists": [
     {
       "id": "a001",
