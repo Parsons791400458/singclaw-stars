@@ -1,13 +1,13 @@
 {
   "schemaVersion": "starclaw.workbench.v1",
-  "updatedAt": "2026-05-20T11:20:00+08:00",
-  "dataFlowVersion": "starclaw-static-json-v2",
-  "status": "fixed_json_data_layer",
-  "sourceNote": "当前版本以静态 data.json 作为固定数据层；页面展示和评分逻辑已经拆到 app.js。下一阶段可把 data.json 替换为 Neon/Postgres API，前端只需保持同一 schema。",
+  "updatedAt": "2026-05-20T11:32:00+08:00",
+  "dataFlowVersion": "starclaw-static-json-v3",
+  "status": "product_page_fixed_json_flow",
+  "sourceNote": "当前版本以前台产品页为主，数据仍由 data.json 固定驱动；展示层 index.html、逻辑层 app.js、数据层 data.json 已拆分。下一阶段可把 data.json 替换为 Neon/Postgres API。",
   "pipeline": [
     {"step": "data", "name": "data.json", "status": "online", "description": "艺人、商务情报、评分权重、数据源状态统一入口"},
-    {"step": "logic", "name": "app.js", "status": "online", "description": "读取权重计算 StarClaw Score，生成候选池、对比表和报告草稿"},
-    {"step": "ui", "name": "index.html", "status": "online", "description": "只保留产品结构和展示容器，便于后续迭代"},
+    {"step": "logic", "name": "app.js", "status": "online", "description": "读取权重计算 StarClaw Score，生成推荐墙、候选池、对比表和报告草稿"},
+    {"step": "ui", "name": "index.html", "status": "online", "description": "产品化前台页面，保留旧版明星追踪内容并接入工作台能力"},
     {"step": "api", "name": "Neon/Postgres", "status": "next", "description": "下一阶段接真实艺人库、风险证据和采集任务"}
   ],
   "scoringWeights": {
@@ -41,85 +41,10 @@
     }
   ],
   "artists": [
-    {
-      "id": "a001",
-      "name": "周深",
-      "role": "歌手 / 综艺嘉宾",
-      "category": ["食品饮料", "家居", "公益", "文旅"],
-      "commercialValue": 92,
-      "categoryFit": 88,
-      "riskLevel": 18,
-      "heatTrend": 84,
-      "partnershipHistory": 86,
-      "fans": "微博 3100w+ / 抖音 900w+",
-      "audience": "女性与家庭消费人群；一二线及新一线覆盖稳定",
-      "recentSignal": "音乐综艺曝光稳定，品牌安全感强，适合长期声量建设。",
-      "riskTags": ["低争议", "档期需提前锁定"],
-      "evidence": ["综艺声量稳定", "公益与国民度资产强", "过往合作品类跨度大"]
-    },
-    {
-      "id": "a002",
-      "name": "白鹿",
-      "role": "演员 / 时尚内容",
-      "category": ["美妆护肤", "服饰时尚", "食品饮料", "游戏"],
-      "commercialValue": 89,
-      "categoryFit": 91,
-      "riskLevel": 24,
-      "heatTrend": 87,
-      "partnershipHistory": 82,
-      "fans": "微博 2800w+ / 抖音 1200w+",
-      "audience": "年轻女性、剧粉、时尚美妆兴趣人群",
-      "recentSignal": "剧集与综艺内容带动短期搜索热度，适合新品首发与年轻化沟通。",
-      "riskTags": ["粉圈舆情需监控", "同档竞品排他确认"],
-      "evidence": ["剧集传播周期明确", "妆造内容二创活跃", "年轻受众互动高"]
-    },
-    {
-      "id": "a003",
-      "name": "王一博",
-      "role": "演员 / 歌手 / 运动标签",
-      "category": ["3C数码", "汽车", "运动户外", "服饰时尚"],
-      "commercialValue": 95,
-      "categoryFit": 93,
-      "riskLevel": 30,
-      "heatTrend": 86,
-      "partnershipHistory": 90,
-      "fans": "微博 4000w+ / 多平台高活跃",
-      "audience": "年轻男性与女性均衡；潮流、运动、科技兴趣强",
-      "recentSignal": "运动与专业感标签突出，适合高客单价品牌和技术型产品。",
-      "riskTags": ["预算门槛高", "粉圈情绪波动需预案"],
-      "evidence": ["运动标签差异化", "高端商业合作履历", "跨圈层传播能力强"]
-    },
-    {
-      "id": "a004",
-      "name": "檀健次",
-      "role": "演员 / 歌手",
-      "category": ["美妆护肤", "食品饮料", "游戏", "服饰时尚"],
-      "commercialValue": 84,
-      "categoryFit": 86,
-      "riskLevel": 22,
-      "heatTrend": 90,
-      "partnershipHistory": 76,
-      "fans": "微博 1700w+ / 抖音 800w+",
-      "audience": "剧粉、年轻女性、内容消费活跃人群",
-      "recentSignal": "上升期热度强，适合预算可控但需要爆发力的 Campaign。",
-      "riskTags": ["热度依赖内容周期", "需确认商务饱和度"],
-      "evidence": ["近期角色讨论度高", "舞台与影视双标签", "粉丝转评赞动员强"]
-    },
-    {
-      "id": "a005",
-      "name": "刘亦菲",
-      "role": "演员 / 高端审美符号",
-      "category": ["美妆护肤", "服饰时尚", "文旅", "家居"],
-      "commercialValue": 94,
-      "categoryFit": 89,
-      "riskLevel": 16,
-      "heatTrend": 80,
-      "partnershipHistory": 88,
-      "fans": "微博 7600w+ / 国民认知高",
-      "audience": "女性消费、轻奢审美、泛国民人群",
-      "recentSignal": "高端与国民度兼具，适合品牌调性升级和长期代言。",
-      "riskTags": ["合作周期需长期规划", "报价区间高"],
-      "evidence": ["国民度强", "高端审美资产稳定", "低争议形象"]
-    }
+    {"id":"a001","name":"周深","role":"歌手 / 综艺嘉宾","category":["食品饮料","家居","公益","文旅"],"commercialValue":92,"categoryFit":88,"riskLevel":18,"heatTrend":84,"partnershipHistory":86,"fans":"微博 3100w+ / 抖音 900w+","audience":"女性与家庭消费人群；一二线及新一线覆盖稳定","recentSignal":"音乐综艺曝光稳定，品牌安全感强，适合长期声量建设。","riskTags":["低争议","档期需提前锁定"],"evidence":["综艺声量稳定","公益与国民度资产强","过往合作品类跨度大"],"bestUse":"饮料主题曲、文旅推广、家庭消费品牌长期合作"},
+    {"id":"a002","name":"白鹿","role":"演员 / 时尚内容","category":["美妆护肤","服饰时尚","食品饮料","游戏"],"commercialValue":89,"categoryFit":91,"riskLevel":24,"heatTrend":87,"partnershipHistory":82,"fans":"微博 2800w+ / 抖音 1200w+","audience":"年轻女性、剧粉、时尚美妆兴趣人群","recentSignal":"剧集与综艺内容带动短期搜索热度，适合新品首发与年轻化沟通。","riskTags":["粉圈舆情需监控","同档竞品排他确认"],"evidence":["剧集传播周期明确","妆造内容二创活跃","年轻受众互动高"],"bestUse":"美妆新品首发、妆造种草、时尚品牌短视频 campaign"},
+    {"id":"a003","name":"王一博","role":"演员 / 歌手 / 运动标签","category":["3C数码","汽车","运动户外","服饰时尚"],"commercialValue":95,"categoryFit":93,"riskLevel":30,"heatTrend":86,"partnershipHistory":90,"fans":"微博 4000w+ / 多平台高活跃","audience":"年轻男性与女性均衡；潮流、运动、科技兴趣强","recentSignal":"运动与专业感标签突出，适合高客单价品牌和技术型产品。","riskTags":["预算门槛高","粉圈情绪波动需预案"],"evidence":["运动标签差异化","高端商业合作履历","跨圈层传播能力强"],"bestUse":"汽车发布、3C旗舰机、运动装备高端线"},
+    {"id":"a004","name":"檀健次","role":"演员 / 歌手","category":["美妆护肤","食品饮料","游戏","服饰时尚"],"commercialValue":84,"categoryFit":86,"riskLevel":22,"heatTrend":90,"partnershipHistory":76,"fans":"微博 1700w+ / 抖音 800w+","audience":"剧粉、年轻女性、内容消费活跃人群","recentSignal":"上升期热度强，适合预算可控但需要爆发力的 Campaign。","riskTags":["热度依赖内容周期","需确认商务饱和度"],"evidence":["近期角色讨论度高","舞台与影视双标签","粉丝转评赞动员强"],"bestUse":"年轻化新品、游戏联动、内容周期借势 campaign"},
+    {"id":"a005","name":"刘亦菲","role":"演员 / 高端审美符号","category":["美妆护肤","服饰时尚","文旅","家居"],"commercialValue":94,"categoryFit":89,"riskLevel":16,"heatTrend":80,"partnershipHistory":88,"fans":"微博 7600w+ / 国民认知高","audience":"女性消费、轻奢审美、泛国民人群","recentSignal":"高端与国民度兼具，适合品牌调性升级和长期代言。","riskTags":["合作周期需长期规划","报价区间高"],"evidence":["国民度强","高端审美资产稳定","低争议形象"],"bestUse":"高端美妆、轻奢时尚、文旅目的地形象升级"}
   ]
 }
