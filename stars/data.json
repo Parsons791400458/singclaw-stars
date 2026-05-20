@@ -1,8 +1,15 @@
 {
-  "updatedAt": "2026-05-20T11:05:00+08:00",
-  "dataFlowVersion": "starclaw-static-json-v1",
-  "status": "demo_fixed_json_flow",
-  "sourceNote": "当前版本使用静态 data.json 作为固定数据源；下一阶段可替换为 Neon/Postgres API，但页面渲染、评分、对比、报告均从同一数据对象读取。",
+  "schemaVersion": "starclaw.workbench.v1",
+  "updatedAt": "2026-05-20T11:20:00+08:00",
+  "dataFlowVersion": "starclaw-static-json-v2",
+  "status": "fixed_json_data_layer",
+  "sourceNote": "当前版本以静态 data.json 作为固定数据层；页面展示和评分逻辑已经拆到 app.js。下一阶段可把 data.json 替换为 Neon/Postgres API，前端只需保持同一 schema。",
+  "pipeline": [
+    {"step": "data", "name": "data.json", "status": "online", "description": "艺人、商务情报、评分权重、数据源状态统一入口"},
+    {"step": "logic", "name": "app.js", "status": "online", "description": "读取权重计算 StarClaw Score，生成候选池、对比表和报告草稿"},
+    {"step": "ui", "name": "index.html", "status": "online", "description": "只保留产品结构和展示容器，便于后续迭代"},
+    {"step": "api", "name": "Neon/Postgres", "status": "next", "description": "下一阶段接真实艺人库、风险证据和采集任务"}
+  ],
   "scoringWeights": {
     "commercialValue": 0.3,
     "categoryFit": 0.25,
